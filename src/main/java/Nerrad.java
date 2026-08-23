@@ -24,6 +24,7 @@ public class Nerrad {
         System.out.println(separator);
 
         String[] tasks = new String[100];
+        boolean[] isDone = new boolean[100];
         int taskCount = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -40,8 +41,29 @@ public class Nerrad {
             if (input.equals("list")) {
                 System.out.println("\n  Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println("  " + (i + 1) + ". " + tasks[i]);
+                    String statusIcon = isDone[i] ? "X" : " ";
+                    System.out.println("  " + (i + 1) + ".[" + statusIcon + "] " + tasks[i]);
                 }
+                System.out.println(separator);
+                continue;
+            }
+
+            if (input.startsWith("mark ")) {
+                int taskNumber = Integer.parseInt(input.substring(5));
+                int taskIndex = taskNumber - 1;
+                isDone[taskIndex] = true;
+                System.out.println("\n  Nice! I've marked this task as done:");
+                System.out.println("    [X] " + tasks[taskIndex]);
+                System.out.println(separator);
+                continue;
+            }
+
+            if (input.startsWith("unmark ")) {
+                int taskNumber = Integer.parseInt(input.substring(7));
+                int taskIndex = taskNumber - 1;
+                isDone[taskIndex] = false;
+                System.out.println("\n  OK, I've marked this task as not done yet:");
+                System.out.println("    [ ] " + tasks[taskIndex]);
                 System.out.println(separator);
                 continue;
             }
