@@ -4,6 +4,15 @@ import java.util.Scanner;
  * Entry point for the Nerrad chatbot.
  */
 public class Nerrad {
+    /** Command separator between a deadline description and its due date/time. */
+    private static final String BY_SEPARATOR = " /by ";
+
+    /** Command separator before an event's start date/time. */
+    private static final String FROM_SEPARATOR = " /from ";
+
+    /** Command separator before an event's end date/time. */
+    private static final String TO_SEPARATOR = " /to ";
+
     /**
      * Starts the chatbot and processes commands until the user enters {@code bye}.
      *
@@ -66,11 +75,49 @@ public class Nerrad {
                 continue;
             }
 
-            tasks[taskCount] = new Task(input);
+            Task newTask = createTask(input);
+            tasks[taskCount] = newTask;
             taskCount++;
-            System.out.println("\n  added: " + input);
+            System.out.println("\n  Got it. I've added this task:");
+            System.out.println("    " + newTask);
+            System.out.println("  Now you have " + taskCount + " tasks in the list.");
             System.out.println(separator);
         }
         scanner.close();
+    }
+
+    /**
+     * Creates the task subtype specified by a valid user command.
+     * Date and time information is kept as entered because date parsing is not
+     * required at this level.
+     *
+     * @param input command entered by the user
+     * @return a todo, deadline, or event represented as a {@link Task}
+     */
+    private static Task createTask(String input) {
+        if (input.startsWith("todo ")) {
+            return new Todo(input.substring(5));
+        }
+
+        if (input.startsWith("deadline ")) {
+            String taskDetails = input.substring(9);
+            int byIndex = taskDetails.indexOf(BY_SEPARATOR);
+            String description = taskDetails.substring(0, byIndex);
+            String by = taskDetails.substring(byIndex + BY_SEPARATOR.length());
+            return new Deadline(description, by);
+        }
+
+        if (input.startsWith("event ")) {
+            String taskDetails = input.substring(6);
+            int fromIndex = taskDetails.indexOf(FROM_SEPARATOR);
+            int toIndex = taskDetails.indexOf(TO_SEPARATOR, fromIndex + FROM_SEPARATOR.length());
+            String description = taskDetails.substring(0, fromIndex);
+            String from = taskDetails.substring(fromIndex + FROM_SEPARATOR.length(), toIndex);
+            String to = taskDetails.substring(toIndex + TO_SEPARATOR.length());
+            return new Event(description, from, to);
+        }
+
+        // Preserve the earlier behavior where plain text is stored as a task.
+        return new Todo(input);
     }
 }
