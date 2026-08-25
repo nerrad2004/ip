@@ -223,3 +223,224 @@ Verify that todos, deadlines, and events can coexist in one Task array while ret
   }
 ]
 ```
+
+## Test case: Reject missing task details
+
+### Aim
+
+Verify that empty todos and incomplete deadline or event commands show specific errors without ending the chatbot session.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo",
+    "expected_output": [
+      "",
+      "  OOPS!!! The description of a todo cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book",
+    "expected_output": [
+      "",
+      "  OOPS!!! A deadline needs a /by date or time.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline /by Sunday",
+    "expected_output": [
+      "",
+      "  OOPS!!! The description of a deadline cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by",
+    "expected_output": [
+      "",
+      "  OOPS!!! The /by date or time of a deadline cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from Mon 2pm",
+    "expected_output": [
+      "",
+      "  OOPS!!! An event needs a /to end date or time.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /to 4pm",
+    "expected_output": [
+      "",
+      "  OOPS!!! An event needs a /from start date or time.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  OOPS!!! The description of an event cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from /to 4pm",
+    "expected_output": [
+      "",
+      "  OOPS!!! The /from start date or time of an event cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from Mon 2pm /to",
+    "expected_output": [
+      "",
+      "  OOPS!!! The /to end date or time of an event cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "todo valid task",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] valid task",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Reject invalid task numbers
+
+### Aim
+
+Verify that mark and unmark commands reject missing, non-numeric, and out-of-range task numbers while allowing later valid commands.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "mark",
+    "expected_output": [
+      "",
+      "  OOPS!!! Please provide a task number to mark.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "unmark zero",
+    "expected_output": [
+      "",
+      "  OOPS!!! The task number must be a whole number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "todo borrow book",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] borrow book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 0",
+    "expected_output": [
+      "",
+      "  OOPS!!! There is no task with this number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "unmark 2",
+    "expected_output": [
+      "",
+      "  OOPS!!! There is no task with this number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [T][X] borrow book",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "unmark 1",
+    "expected_output": [
+      "",
+      "  OK, I've marked this task as not done yet:",
+      "    [T][ ] borrow book",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Reject an unknown command
+
+### Aim
+
+Verify that unknown commands show a clear error and do not add an unintended task.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "blah",
+    "expected_output": [
+      "",
+      "  OOPS!!! I'm sorry, but I don't know what that means :-(",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "list",
+    "expected_output": [
+      "",
+      "  Here are the tasks in your list:",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
