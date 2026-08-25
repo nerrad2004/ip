@@ -251,7 +251,7 @@ Verify that an event stores and displays both its start and end date/time exactl
 
 ### Aim
 
-Verify that todos, deadlines, and events can coexist in one Task array while retaining their type-specific displays and shared done status behavior.
+Verify that todos, deadlines, and events can coexist in one Task collection while retaining their type-specific displays and shared done status behavior.
 
 ### Commands and expected outputs
 

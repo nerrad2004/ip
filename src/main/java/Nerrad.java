@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -23,8 +25,7 @@ public class Nerrad {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        List<Task> tasks = new ArrayList<>();
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -39,8 +40,8 @@ public class Nerrad {
 
             if (input.equals("list")) {
                 System.out.println("\n  Here are the tasks in your list:");
-                for (int i = 0; i < taskCount; i++) {
-                    System.out.println("  " + (i + 1) + "." + tasks[i]);
+                for (int i = 0; i < tasks.size(); i++) {
+                    System.out.println("  " + (i + 1) + "." + tasks.get(i));
                 }
                 System.out.println(separator);
                 continue;
@@ -48,48 +49,38 @@ public class Nerrad {
 
             try {
                 if (input.equals("mark") || input.startsWith("mark ")) {
-                    int taskIndex = getTaskIndex(input.substring(4), taskCount, "mark");
-                    tasks[taskIndex].markAsDone();
+                    int taskIndex = getTaskIndex(input.substring(4), tasks.size(), "mark");
+                    tasks.get(taskIndex).markAsDone();
                     System.out.println("\n  Nice! I've marked this task as done:");
-                    System.out.println("    " + tasks[taskIndex]);
+                    System.out.println("    " + tasks.get(taskIndex));
                     System.out.println(separator);
                     continue;
                 }
 
                 if (input.equals("unmark") || input.startsWith("unmark ")) {
-                    int taskIndex = getTaskIndex(input.substring(6), taskCount, "unmark");
-                    tasks[taskIndex].markAsNotDone();
+                    int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "unmark");
+                    tasks.get(taskIndex).markAsNotDone();
                     System.out.println("\n  OK, I've marked this task as not done yet:");
-                    System.out.println("    " + tasks[taskIndex]);
+                    System.out.println("    " + tasks.get(taskIndex));
                     System.out.println(separator);
                     continue;
                 }
 
                 if (input.equals("delete") || input.startsWith("delete ")) {
-                    int taskIndex = getTaskIndex(input.substring(6), taskCount, "delete");
-                    Task deletedTask = tasks[taskIndex];
-                    for (int i = taskIndex; i < taskCount - 1; i++) {
-                        tasks[i] = tasks[i + 1];
-                    }
-                    taskCount--;
-                    tasks[taskCount] = null;
+                    int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "delete");
+                    Task deletedTask = tasks.remove(taskIndex);
                     System.out.println("\n  Noted. I've removed this task:");
                     System.out.println("    " + deletedTask);
-                    System.out.println("  Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(separator);
                     continue;
                 }
 
-                if (taskCount == tasks.length) {
-                    throw new NerradException("Your task list is full. Please delete a task before adding another.");
-                }
-
                 Task newTask = createTask(input);
-                tasks[taskCount] = newTask;
-                taskCount++;
+                tasks.add(newTask);
                 System.out.println("\n  Got it. I've added this task:");
                 System.out.println("    " + newTask);
-                System.out.println("  Now you have " + taskCount + " tasks in the list.");
+                System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
                 System.out.println(separator);
             } catch (NerradException exception) {
                 System.out.println("\n  OOPS!!! " + exception.getMessage());
@@ -165,7 +156,7 @@ public class Nerrad {
     }
 
     /**
-     * Converts a task number in a mark or unmark command into an array index.
+     * Converts a task number in a command into a list index.
      *
      * @param taskNumberText task number typed by the user
      * @param taskCount number of tasks currently stored
