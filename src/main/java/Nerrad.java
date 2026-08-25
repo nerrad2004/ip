@@ -65,6 +65,21 @@ public class Nerrad {
                     continue;
                 }
 
+                if (input.equals("delete") || input.startsWith("delete ")) {
+                    int taskIndex = getTaskIndex(input.substring(6), taskCount, "delete");
+                    Task deletedTask = tasks[taskIndex];
+                    for (int i = taskIndex; i < taskCount - 1; i++) {
+                        tasks[i] = tasks[i + 1];
+                    }
+                    taskCount--;
+                    tasks[taskCount] = null;
+                    System.out.println("\n  Noted. I've removed this task:");
+                    System.out.println("    " + deletedTask);
+                    System.out.println("  Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(separator);
+                    continue;
+                }
+
                 if (taskCount == tasks.length) {
                     throw new NerradException("Your task list is full. Please delete a task before adding another.");
                 }

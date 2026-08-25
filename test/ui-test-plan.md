@@ -44,6 +44,129 @@ Verify that a task without a date or time is stored and displayed with the Todo 
 ]
 ```
 
+## Test case: Delete a task and renumber the list
+
+### Aim
+
+Verify that deleting a selected task displays the removed task, decreases the task count, shifts later tasks up, and handles invalid delete inputs.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo read book",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] read book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by Sunday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] return book (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 2",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [D][X] return book (by: Sunday)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete 2",
+    "expected_output": [
+      "",
+      "  Noted. I've removed this task:",
+      "    [D][X] return book (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "list",
+    "expected_output": [
+      "",
+      "  Here are the tasks in your list:",
+      "  1.[T][ ] read book",
+      "  2.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete",
+    "expected_output": [
+      "",
+      "  OOPS!!! Please provide a task number to delete.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete two",
+    "expected_output": [
+      "",
+      "  OOPS!!! The task number must be a whole number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete 3",
+    "expected_output": [
+      "",
+      "  OOPS!!! There is no task with this number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete 1",
+    "expected_output": [
+      "",
+      "  Noted. I've removed this task:",
+      "    [T][ ] read book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "list",
+    "expected_output": [
+      "",
+      "  Here are the tasks in your list:",
+      "  1.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
 ## Test case: Add and list a deadline
 
 ### Aim
