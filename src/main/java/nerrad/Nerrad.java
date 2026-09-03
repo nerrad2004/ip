@@ -31,7 +31,7 @@ public class Nerrad {
     /**
      * Creates a Nerrad chatbot that stores its tasks at the given path.
      *
-     * @param filePath path of the task data file
+     * @param filePath Path of the task data file.
      */
     public Nerrad(String filePath) {
         this.ui = new Ui();
@@ -112,7 +112,7 @@ public class Nerrad {
     /**
      * Starts Nerrad using the normal project-relative data file.
      *
-     * @param args command-line arguments; not used
+     * @param args Command-line arguments; not used.
      */
     public static void main(String[] args) {
         new Nerrad("data/nerrad.txt").run();
@@ -121,7 +121,7 @@ public class Nerrad {
     /**
      * Saves the current task list and converts file-writing failures into a chatbot error.
      *
-     * @throws NerradException if the task list cannot be saved
+     * @throws NerradException If the task list cannot be saved.
      */
     private void saveTasks() throws NerradException {
         try {
@@ -134,8 +134,8 @@ public class Nerrad {
     /**
      * Adds a task only if the changed list can be saved successfully.
      *
-     * @param newTask task to add
-     * @throws NerradException if the changed list cannot be saved
+     * @param newTask Task to add.
+     * @throws NerradException If the changed list cannot be saved.
      */
     private void addTask(Task newTask) throws NerradException {
         tasks.add(newTask);
@@ -150,9 +150,9 @@ public class Nerrad {
     /**
      * Changes a task's completion status only if the changed list can be saved.
      *
-     * @param taskIndex index of the task to change
-     * @param shouldBeDone desired completion status
-     * @throws NerradException if the changed list cannot be saved
+     * @param taskIndex Index of the task to change.
+     * @param shouldBeDone Desired completion status.
+     * @throws NerradException If the changed list cannot be saved.
      */
     private void setTaskDone(int taskIndex, boolean shouldBeDone) throws NerradException {
         boolean wasDone = tasks.get(taskIndex).isDone();
@@ -169,9 +169,9 @@ public class Nerrad {
     /**
      * Deletes a task only if the changed list can be saved successfully.
      *
-     * @param taskIndex index of the task to delete
-     * @return deleted task
-     * @throws NerradException if the changed list cannot be saved
+     * @param taskIndex Index of the task to delete.
+     * @return Deleted task.
+     * @throws NerradException If the changed list cannot be saved.
      */
     private Task deleteTask(int taskIndex) throws NerradException {
         Task deletedTask = tasks.remove(taskIndex);

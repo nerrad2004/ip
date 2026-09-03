@@ -19,7 +19,7 @@ public class TaskList {
     /**
      * Creates a task list containing the supplied saved tasks.
      *
-     * @param tasks tasks to manage
+     * @param tasks Tasks to manage.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
@@ -28,7 +28,7 @@ public class TaskList {
     /**
      * Returns the number of tasks in this list.
      *
-     * @return number of managed tasks
+     * @return Number of managed tasks.
      */
     public int size() {
         return tasks.size();
@@ -37,8 +37,8 @@ public class TaskList {
     /**
      * Returns the task at a zero-based index.
      *
-     * @param index zero-based task index
-     * @return requested task
+     * @param index Zero-based task index.
+     * @return Requested task.
      */
     public Task get(int index) {
         return tasks.get(index);
@@ -47,7 +47,7 @@ public class TaskList {
     /**
      * Returns a read-only view of the managed tasks for display or saving.
      *
-     * @return unmodifiable task list view
+     * @return Unmodifiable task list view.
      */
     public List<Task> getTasks() {
         return Collections.unmodifiableList(tasks);
@@ -56,7 +56,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task task to add
+     * @param task Task to add.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -65,8 +65,8 @@ public class TaskList {
     /**
      * Inserts a task at a zero-based index.
      *
-     * @param index insertion index
-     * @param task task to insert
+     * @param index Insertion index.
+     * @param task Task to insert.
      */
     public void add(int index, Task task) {
         tasks.add(index, task);
@@ -75,8 +75,8 @@ public class TaskList {
     /**
      * Removes and returns the task at a zero-based index.
      *
-     * @param index index of the task to remove
-     * @return removed task
+     * @param index Index of the task to remove.
+     * @return Removed task.
      */
     public Task remove(int index) {
         return tasks.remove(index);
@@ -85,8 +85,8 @@ public class TaskList {
     /**
      * Changes the completion state of a task.
      *
-     * @param index zero-based index of the task to update
-     * @param shouldBeDone whether the task should be marked done
+     * @param index Zero-based index of the task to update.
+     * @param shouldBeDone Whether the task should be marked done.
      */
     public void setDone(int index, boolean shouldBeDone) {
         Task task = get(index);

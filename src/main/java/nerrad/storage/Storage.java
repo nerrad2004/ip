@@ -1,11 +1,11 @@
 package nerrad.storage;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class Storage {
     /**
      * Creates storage that reads from and writes to the given file path.
      *
-     * @param filePath path of Nerrad's task data file
+     * @param filePath Path of Nerrad's task data file.
      */
     public Storage(String filePath) {
         this.saveFile = Path.of(filePath);
@@ -33,8 +33,8 @@ public class Storage {
     /**
      * Writes every task to the save file, replacing its previous contents.
      *
-     * @param tasks tasks to save
-     * @throws IOException if the data directory or file cannot be written
+     * @param tasks Tasks to save.
+     * @throws IOException If the data directory or file cannot be written.
      */
     public void saveTasks(List<Task> tasks) throws IOException {
         List<String> taskLines = new ArrayList<>();
@@ -50,8 +50,8 @@ public class Storage {
      * Loads tasks from the save file. An absent file means Nerrad is being run
      * for the first time, so an empty list is returned.
      *
-     * @return tasks reconstructed from the save file
-     * @throws IOException if an existing save file cannot be read or understood
+     * @return Tasks reconstructed from the save file.
+     * @throws IOException If an existing save file cannot be read or understood.
      */
     public List<Task> loadTasks() throws IOException {
         if (Files.notExists(saveFile)) {
@@ -71,8 +71,8 @@ public class Storage {
     /**
      * Converts one task into a text line that contains its type, status, and details.
      *
-     * @param task task to format
-     * @return save-file representation of the task
+     * @param task Task to format.
+     * @return Save-file representation of the task.
      */
     private static String formatTask(Task task) {
         String doneStatus = task.isDone() ? "1" : "0";
@@ -93,9 +93,9 @@ public class Storage {
     /**
      * Reconstructs a task saved in Nerrad's text-file format.
      *
-     * @param taskLine one line from the save file
-     * @return reconstructed task
-     * @throws IOException if the line is not in the expected format
+     * @param taskLine One line from the save file.
+     * @return Reconstructed task.
+     * @throws IOException If the line is not in the expected format.
      */
     private static Task parseTask(String taskLine) throws IOException {
         String[] parts = taskLine.split(" \\| ", -1);

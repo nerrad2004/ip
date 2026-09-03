@@ -7,7 +7,7 @@ public class NerradException extends Exception {
     /**
      * Creates an exception with a user-facing explanation of the input problem.
      *
-     * @param message explanation that will be shown in the chatbot UI
+     * @param message Explanation that will be shown in the chatbot UI.
      */
     public NerradException(String message) {
         super(message);
