@@ -1,5 +1,13 @@
+package nerrad;
+
 import java.io.IOException;
 import java.util.Scanner;
+
+import nerrad.parser.Parser;
+import nerrad.storage.Storage;
+import nerrad.task.Task;
+import nerrad.task.TaskList;
+import nerrad.ui.Ui;
 
 /**
  * Coordinates Nerrad's user interface, command parser, storage, and task list.

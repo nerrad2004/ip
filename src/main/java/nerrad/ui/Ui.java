@@ -1,5 +1,9 @@
+package nerrad.ui;
+
 import java.util.List;
 import java.util.Scanner;
+
+import nerrad.task.Task;
 
 /**
  * Handles all console input and output for the Nerrad chatbot.
@@ -119,3 +123,4 @@ public class Ui {
         System.out.println(SEPARATOR);
     }
 }
+

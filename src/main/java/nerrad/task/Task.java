@@ -1,3 +1,5 @@
+package nerrad.task;
+
 /**
  * Represents a task with a description and completion status.
  */
@@ -65,3 +67,4 @@ public class Task {
         return "[" + getStatusIcon() + "] " + description;
     }
 }
+
