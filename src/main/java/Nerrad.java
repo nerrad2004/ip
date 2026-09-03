@@ -14,49 +14,31 @@ public class Nerrad {
      * @param args command-line arguments; not used
      */
     public static void main(String[] args) {
-        String separator = "____________________________________________________________";
+        Ui ui = new Ui();
         List<Task> tasks;
         try {
             tasks = loadTasks();
         } catch (NerradException exception) {
-            System.out.println("  OOPS!!! " + exception.getMessage());
-            System.out.println(separator);
+            ui.showLoadingError();
             return;
         }
 
-        String banner = " _   _                         _ \n"
-                + "| \\ | | ___ _ __ _ __ __ _  __| |\n"
-                + "|  \\| |/ _ \\ '__| '__/ _` |/ _` |\n"
-                + "| |\\  |  __/ |  | | | (_| | (_| |\n"
-                + "|_| \\_|\\___|_|  |_|  \\__,_|\\__,_|\n";
-
-        System.out.println(separator);
-        System.out.print(banner);
-        System.out.println("\nHello! I'm Nerrad. My actual name is that backwards! xD");
-        System.out.println("What can I do for you?");
-        System.out.println(separator);
+        ui.showWelcome();
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("You: ");
-            System.out.flush();
-            if (!scanner.hasNextLine()) {
+            String input = ui.readCommand(scanner);
+            if (input == null) {
                 break;
             }
-            String input = scanner.nextLine();
 
             if (input.equals("bye")) {
-                System.out.println("\n  Bye! Hope to see you again soon!!!");
-                System.out.println(separator);
+                ui.showGoodbye();
                 break;
             }
 
             if (input.equals("list")) {
-                System.out.println("\n  Here are the tasks in your list:");
-                for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println("  " + (i + 1) + "." + tasks.get(i));
-                }
-                System.out.println(separator);
+                ui.showTaskList(tasks);
                 continue;
             }
 
@@ -64,40 +46,29 @@ public class Nerrad {
                 if (input.equals("mark") || input.startsWith("mark ")) {
                     int taskIndex = getTaskIndex(input.substring(4), tasks.size(), "mark");
                     setTaskDone(tasks, taskIndex, true);
-                    System.out.println("\n  Nice! I've marked this task as done:");
-                    System.out.println("    " + tasks.get(taskIndex));
-                    System.out.println(separator);
+                    ui.showTaskMarked(tasks.get(taskIndex));
                     continue;
                 }
 
                 if (input.equals("unmark") || input.startsWith("unmark ")) {
                     int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "unmark");
                     setTaskDone(tasks, taskIndex, false);
-                    System.out.println("\n  OK, I've marked this task as not done yet:");
-                    System.out.println("    " + tasks.get(taskIndex));
-                    System.out.println(separator);
+                    ui.showTaskUnmarked(tasks.get(taskIndex));
                     continue;
                 }
 
                 if (input.equals("delete") || input.startsWith("delete ")) {
                     int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "delete");
                     Task deletedTask = deleteTask(tasks, taskIndex);
-                    System.out.println("\n  Noted. I've removed this task:");
-                    System.out.println("    " + deletedTask);
-                    System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
-                    System.out.println(separator);
+                    ui.showTaskDeleted(deletedTask, tasks.size());
                     continue;
                 }
 
                 Task newTask = createTask(input);
                 addTask(tasks, newTask);
-                System.out.println("\n  Got it. I've added this task:");
-                System.out.println("    " + newTask);
-                System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
-                System.out.println(separator);
+                ui.showTaskAdded(newTask, tasks.size());
             } catch (NerradException exception) {
-                System.out.println("\n  OOPS!!! " + exception.getMessage());
-                System.out.println(separator);
+                ui.showError(exception.getMessage());
             }
         }
         scanner.close();
