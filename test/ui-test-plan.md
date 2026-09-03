@@ -44,6 +44,75 @@ Verify that a task without a date or time is stored and displayed with the Todo 
 ]
 ```
 
+## Test case: Save task changes to disk
+
+### Aim
+
+Verify that adding, marking, unmarking, and deleting tasks complete normally so their current state can be written to the save file.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo save me",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] save me",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline remove me /by Sunday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] remove me (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [T][X] save me",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "unmark 1",
+    "expected_output": [
+      "",
+      "  OK, I've marked this task as not done yet:",
+      "    [T][ ] save me",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete 2",
+    "expected_output": [
+      "",
+      "  Noted. I've removed this task:",
+      "    [D][ ] remove me (by: Sunday)",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
 ## Test case: Delete a task and renumber the list
 
 ### Aim
@@ -554,6 +623,66 @@ Verify that unknown commands show a clear error and do not add an unintended tas
     "expected_output": [
       "",
       "  Here are the tasks in your list:",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Save all task types for file inspection
+
+### Aim
+
+Verify that the final save file records Todo, Deadline, and Event task details and completion status in the chosen text format.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo saved todo",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] saved todo",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline saved deadline /by Friday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] saved deadline (by: Friday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event saved event /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [E][ ] saved event (from: Mon 2pm to: 4pm)",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [T][X] saved todo",
       "____________________________________________________________"
     ]
   },

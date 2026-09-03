@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -51,6 +52,7 @@ public class Nerrad {
                 if (input.equals("mark") || input.startsWith("mark ")) {
                     int taskIndex = getTaskIndex(input.substring(4), tasks.size(), "mark");
                     tasks.get(taskIndex).markAsDone();
+                    saveTasks(tasks);
                     System.out.println("\n  Nice! I've marked this task as done:");
                     System.out.println("    " + tasks.get(taskIndex));
                     System.out.println(separator);
@@ -60,6 +62,7 @@ public class Nerrad {
                 if (input.equals("unmark") || input.startsWith("unmark ")) {
                     int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "unmark");
                     tasks.get(taskIndex).markAsNotDone();
+                    saveTasks(tasks);
                     System.out.println("\n  OK, I've marked this task as not done yet:");
                     System.out.println("    " + tasks.get(taskIndex));
                     System.out.println(separator);
@@ -69,6 +72,7 @@ public class Nerrad {
                 if (input.equals("delete") || input.startsWith("delete ")) {
                     int taskIndex = getTaskIndex(input.substring(6), tasks.size(), "delete");
                     Task deletedTask = tasks.remove(taskIndex);
+                    saveTasks(tasks);
                     System.out.println("\n  Noted. I've removed this task:");
                     System.out.println("    " + deletedTask);
                     System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
@@ -78,6 +82,7 @@ public class Nerrad {
 
                 Task newTask = createTask(input);
                 tasks.add(newTask);
+                saveTasks(tasks);
                 System.out.println("\n  Got it. I've added this task:");
                 System.out.println("    " + newTask);
                 System.out.println("  Now you have " + tasks.size() + " tasks in the list.");
@@ -179,6 +184,20 @@ public class Nerrad {
             return taskNumber - 1;
         } catch (NumberFormatException exception) {
             throw new NerradException("The task number must be a whole number.");
+        }
+    }
+
+    /**
+     * Saves the current task list and converts file-writing failures into a chatbot error.
+     *
+     * @param tasks tasks to save
+     * @throws NerradException if the task list cannot be saved
+     */
+    private static void saveTasks(List<Task> tasks) throws NerradException {
+        try {
+            Storage.saveTasks(tasks);
+        } catch (IOException exception) {
+            throw new NerradException("I could not save your tasks.");
         }
     }
 }

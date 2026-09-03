@@ -38,6 +38,24 @@ public class Task {
     }
 
     /**
+     * Returns whether this task has been marked as done.
+     *
+     * @return true if the task is done, otherwise false
+     */
+    public boolean isDone() {
+        return isDone;
+    }
+
+    /**
+     * Returns this task's description.
+     *
+     * @return task description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Returns the task in its user-facing display format.
      *
      * @return status icon followed by the task description
