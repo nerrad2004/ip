@@ -34,6 +34,7 @@ After every source-code update:
 
 1. Review `test/ui-test-plan.md` and update it when the changed or newly added behavior requires different or additional UI test cases.
 2. Invoke the project-specific `test-ui` skill to run the full UI test plan. Do not consider the code update complete until the skill has been run and its result has been reported to the user.
+3. Review and update JUnit tests to maintain coverage of approximately the top 50% highest-value methods. Prioritize complex, core, or critical business logic, and update relevant JUnit tests after each code change.
 
 ## Git
 
