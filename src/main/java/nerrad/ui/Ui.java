@@ -60,6 +60,19 @@ public class Ui {
     }
 
     /**
+     * Displays every task whose description matches the user's keyword.
+     *
+     * @param matchingTasks Tasks to display.
+     */
+    public void showMatchingTasks(List<Task> matchingTasks) {
+        System.out.println("\n  Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println("  " + (i + 1) + "." + matchingTasks.get(i));
+        }
+        System.out.println(SEPARATOR);
+    }
+
+    /**
      * Displays confirmation that a task was added.
      *
      * @param task Task that was added.

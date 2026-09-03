@@ -78,6 +78,15 @@ public class Nerrad {
             }
 
             try {
+                if (input.equals("find") || input.startsWith("find ")) {
+                    String keyword = input.substring(4).trim();
+                    if (keyword.isEmpty()) {
+                        throw new NerradException("Please provide a keyword to find.");
+                    }
+                    ui.showMatchingTasks(tasks.findTasks(keyword));
+                    continue;
+                }
+
                 if (input.equals("mark") || input.startsWith("mark ")) {
                     int taskIndex = parser.parseTaskIndex(input.substring(4), tasks.size(), "mark");
                     setTaskDone(taskIndex, true);

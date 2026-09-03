@@ -55,4 +55,18 @@ class TaskListTest {
 
         assertFalse(taskList.get(0).isDone());
     }
+
+    @Test
+    void findTasks_matchingDescriptions_returnsTasksInListOrder() {
+        TaskList taskList = new TaskList();
+        Todo firstMatch = new Todo("read book");
+        Todo nonMatch = new Todo("write report");
+        Todo secondMatch = new Todo("return book");
+        taskList.add(firstMatch);
+        taskList.add(nonMatch);
+        taskList.add(secondMatch);
+
+        assertEquals(List.of(firstMatch, secondMatch), taskList.findTasks("book"));
+        assertTrue(taskList.findTasks("missing").isEmpty());
+    }
 }
