@@ -12,7 +12,16 @@ import java.util.List;
  */
 public class Storage {
     /** Location of Nerrad's task data file. */
-    private static final Path SAVE_FILE = Path.of("data", "nerrad.txt");
+    private final Path saveFile;
+
+    /**
+     * Creates storage that reads from and writes to the given file path.
+     *
+     * @param filePath path of Nerrad's task data file
+     */
+    public Storage(String filePath) {
+        this.saveFile = Path.of(filePath);
+    }
 
     /**
      * Writes every task to the save file, replacing its previous contents.
@@ -20,14 +29,14 @@ public class Storage {
      * @param tasks tasks to save
      * @throws IOException if the data directory or file cannot be written
      */
-    public static void saveTasks(List<Task> tasks) throws IOException {
+    public void saveTasks(List<Task> tasks) throws IOException {
         List<String> taskLines = new ArrayList<>();
         for (Task task : tasks) {
             taskLines.add(formatTask(task));
         }
 
-        Files.createDirectories(SAVE_FILE.getParent());
-        Files.write(SAVE_FILE, taskLines, StandardCharsets.UTF_8);
+        Files.createDirectories(saveFile.getParent());
+        Files.write(saveFile, taskLines, StandardCharsets.UTF_8);
     }
 
     /**
@@ -37,16 +46,16 @@ public class Storage {
      * @return tasks reconstructed from the save file
      * @throws IOException if an existing save file cannot be read or understood
      */
-    public static List<Task> loadTasks() throws IOException {
-        if (Files.notExists(SAVE_FILE)) {
+    public List<Task> loadTasks() throws IOException {
+        if (Files.notExists(saveFile)) {
             return new ArrayList<>();
         }
-        if (!Files.isRegularFile(SAVE_FILE)) {
+        if (!Files.isRegularFile(saveFile)) {
             throw new IOException("The save path is not a file.");
         }
 
         List<Task> tasks = new ArrayList<>();
-        for (String taskLine : Files.readAllLines(SAVE_FILE, StandardCharsets.UTF_8)) {
+        for (String taskLine : Files.readAllLines(saveFile, StandardCharsets.UTF_8)) {
             tasks.add(parseTask(taskLine));
         }
         return tasks;
