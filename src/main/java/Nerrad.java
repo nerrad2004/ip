@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,8 +37,12 @@ public class Nerrad {
         System.out.println(separator);
 
         Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNextLine()) {
+        while (true) {
             System.out.print("You: ");
+            System.out.flush();
+            if (!scanner.hasNextLine()) {
+                break;
+            }
             String input = scanner.nextLine();
 
             if (input.equals("bye")) {
@@ -99,8 +105,8 @@ public class Nerrad {
 
     /**
      * Creates the task subtype specified by a valid user command.
-     * Date and time information is kept as entered because date parsing is not
-     * required at this level.
+     * Deadlines use a {@link LocalDate} so that they can be validated and
+     * displayed consistently.
      *
      * @param input command entered by the user
      * @return a todo, deadline, or event represented as a {@link Task}
@@ -121,14 +127,18 @@ public class Nerrad {
                 throw new NerradException("A deadline needs a /by date or time.");
             }
             String description = taskDetails.substring(0, byIndex).trim();
-            String by = taskDetails.substring(byIndex + 3).trim();
+            String byText = taskDetails.substring(byIndex + 3).trim();
             if (description.isEmpty()) {
                 throw new NerradException("The description of a deadline cannot be empty.");
             }
-            if (by.isEmpty()) {
+            if (byText.isEmpty()) {
                 throw new NerradException("The /by date or time of a deadline cannot be empty.");
             }
-            return new Deadline(description, by);
+            try {
+                return new Deadline(description, LocalDate.parse(byText));
+            } catch (DateTimeParseException exception) {
+                throw new NerradException("Please use the date format yyyy-MM-dd.");
+            }
         }
 
         if (input.equals("event") || input.startsWith("event ")) {

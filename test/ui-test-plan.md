@@ -65,11 +65,11 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     ]
   },
   {
-    "command": "deadline remove me /by Sunday",
+    "command": "deadline remove me /by 2019-12-03",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] remove me (by: Sunday)",
+      "    [D][ ] remove me (by: Dec 03 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -97,7 +97,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "expected_output": [
       "",
       "  Noted. I've removed this task:",
-      "    [D][ ] remove me (by: Sunday)",
+      "    [D][ ] remove me (by: Dec 03 2019)",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -134,11 +134,11 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     ]
   },
   {
-    "command": "deadline return book /by Sunday",
+    "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] return book (by: Sunday)",
+      "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -158,7 +158,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "expected_output": [
       "",
       "  Nice! I've marked this task as done:",
-      "    [D][X] return book (by: Sunday)",
+      "    [D][X] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
   },
@@ -167,7 +167,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "expected_output": [
       "",
       "  Noted. I've removed this task:",
-      "    [D][X] return book (by: Sunday)",
+      "    [D][X] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -240,18 +240,18 @@ Verify that deleting a selected task displays the removed task, decreases the ta
 
 ### Aim
 
-Verify that a deadline stores and displays its due date/time exactly as entered.
+Verify that a deadline stores a valid date and displays it in a readable format.
 
 ### Commands and expected outputs
 
 ```json
 [
   {
-    "command": "deadline return book /by Sunday",
+    "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] return book (by: Sunday)",
+      "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -261,7 +261,7 @@ Verify that a deadline stores and displays its due date/time exactly as entered.
     "expected_output": [
       "",
       "  Here are the tasks in your list:",
-      "  1.[D][ ] return book (by: Sunday)",
+      "  1.[D][ ] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
   },
@@ -337,11 +337,11 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     ]
   },
   {
-    "command": "deadline return book /by June 6th",
+    "command": "deadline return book /by 2019-06-06",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] return book (by: June 6th)",
+      "    [D][ ] return book (by: Jun 06 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -380,7 +380,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
       "",
       "  Here are the tasks in your list:",
       "  1.[T][X] read book",
-      "  2.[D][ ] return book (by: June 6th)",
+      "  2.[D][ ] return book (by: Jun 06 2019)",
       "  3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -400,7 +400,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
       "",
       "  Here are the tasks in your list:",
       "  1.[T][X] read book",
-      "  2.[D][ ] return book (by: June 6th)",
+      "  2.[D][ ] return book (by: Jun 06 2019)",
       "  3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -455,6 +455,14 @@ Verify that empty todos and incomplete deadline or event commands show specific 
     "expected_output": [
       "",
       "  OOPS!!! The /by date or time of a deadline cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by tomorrow",
+    "expected_output": [
+      "",
+      "  OOPS!!! Please use the date format yyyy-MM-dd.",
       "____________________________________________________________"
     ]
   },
@@ -658,11 +666,11 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     ]
   },
   {
-    "command": "deadline saved deadline /by Friday",
+    "command": "deadline saved deadline /by 2020-01-10",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] saved deadline (by: Friday)",
+      "    [D][ ] saved deadline (by: Jan 10 2020)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -718,11 +726,11 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     ]
   },
   {
-    "command": "deadline return book /by Sunday",
+    "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
       "  Got it. I've added this task:",
-      "    [D][ ] return book (by: Sunday)",
+      "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
     ]
@@ -742,7 +750,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "expected_output": [
       "",
       "  Nice! I've marked this task as done:",
-      "    [D][X] return book (by: Sunday)",
+      "    [D][X] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
   },
@@ -761,7 +769,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
       "",
       "  Here are the tasks in your list:",
       "  1.[T][ ] read book",
-      "  2.[D][X] return book (by: Sunday)",
+      "  2.[D][X] return book (by: Dec 02 2019)",
       "  3.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "____________________________________________________________"
     ]
