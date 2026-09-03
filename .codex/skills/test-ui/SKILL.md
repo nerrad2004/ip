@@ -23,7 +23,7 @@ Use the deterministic runner in `scripts/run_ui_tests.py` to test the chatbot on
 4. From the repository root, run:
 
    ```powershell
-   python .codex/skills/test-ui/scripts/run_ui_tests.py
+   python .codex/skills/test-ui/scripts/run_ui_tests.py --main-class nerrad.Nerrad
    ```
 
 5. Show the runner's console transcript to the user. It includes the input commands and complete program output for each executed test case.
