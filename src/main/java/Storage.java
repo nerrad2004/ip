@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -97,7 +99,11 @@ public class Storage {
             if (parts.length != 4) {
                 throw new IOException("The save file contains an invalid deadline.");
             }
-            task = new Deadline(parts[2], parts[3]);
+            try {
+                task = new Deadline(parts[2], LocalDate.parse(parts[3]));
+            } catch (DateTimeParseException exception) {
+                throw new IOException("The save file contains an invalid deadline date.", exception);
+            }
             break;
         case "E":
             if (parts.length != 5) {
