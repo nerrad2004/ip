@@ -29,6 +29,25 @@ public class Storage {
     }
 
     /**
+     * Loads tasks from the save file. An absent file means Nerrad is being run
+     * for the first time, so an empty list is returned.
+     *
+     * @return tasks reconstructed from the save file
+     * @throws IOException if an existing save file cannot be read or understood
+     */
+    public static List<Task> loadTasks() throws IOException {
+        if (Files.notExists(SAVE_FILE)) {
+            return new ArrayList<>();
+        }
+
+        List<Task> tasks = new ArrayList<>();
+        for (String taskLine : Files.readAllLines(SAVE_FILE, StandardCharsets.UTF_8)) {
+            tasks.add(parseTask(taskLine));
+        }
+        return tasks;
+    }
+
+    /**
      * Converts one task into a text line that contains its type, status, and details.
      *
      * @param task task to format
@@ -48,5 +67,48 @@ public class Storage {
         Event event = (Event) task;
         return "E | " + doneStatus + " | " + event.getDescription()
                 + " | " + event.getFrom() + " | " + event.getTo();
+    }
+
+    /**
+     * Reconstructs a task saved in Nerrad's text-file format.
+     *
+     * @param taskLine one line from the save file
+     * @return reconstructed task
+     * @throws IOException if the line is not in the expected format
+     */
+    private static Task parseTask(String taskLine) throws IOException {
+        String[] parts = taskLine.split(" \\| ", -1);
+        if (parts.length < 3 || (!parts[1].equals("0") && !parts[1].equals("1"))) {
+            throw new IOException("The save file contains an invalid task.");
+        }
+
+        Task task;
+        switch (parts[0]) {
+        case "T":
+            if (parts.length != 3) {
+                throw new IOException("The save file contains an invalid todo.");
+            }
+            task = new Todo(parts[2]);
+            break;
+        case "D":
+            if (parts.length != 4) {
+                throw new IOException("The save file contains an invalid deadline.");
+            }
+            task = new Deadline(parts[2], parts[3]);
+            break;
+        case "E":
+            if (parts.length != 5) {
+                throw new IOException("The save file contains an invalid event.");
+            }
+            task = new Event(parts[2], parts[3], parts[4]);
+            break;
+        default:
+            throw new IOException("The save file contains an unknown task type.");
+        }
+
+        if (parts[1].equals("1")) {
+            task.markAsDone();
+        }
+        return task;
     }
 }

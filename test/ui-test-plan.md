@@ -2,7 +2,7 @@
 
 This file is the source of truth for console UI test cases run by the project-specific `test-ui` skill.
 
-For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts a fresh instance of Nerrad and ends with `bye` so the program exits normally.
+For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts in a fresh data folder and ends with `bye` so the program exits normally. A command with `"new_session": true` starts Nerrad again using the same test data folder, which is used to test saved tasks being loaded.
 
 ## Test case: Add and list a todo
 
@@ -683,6 +683,86 @@ Verify that the final save file records Todo, Deadline, and Event task details a
       "",
       "  Nice! I've marked this task as done:",
       "    [T][X] saved todo",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Load saved tasks after restarting
+
+### Aim
+
+Verify that Todo, Deadline, and Event tasks, including their done status, are restored when Nerrad starts again.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo read book",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] read book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by Sunday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] return book (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 2",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [D][X] return book (by: Sunday)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "list",
+    "new_session": true,
+    "expected_output": [
+      "",
+      "  Here are the tasks in your list:",
+      "  1.[T][ ] read book",
+      "  2.[D][X] return book (by: Sunday)",
+      "  3.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "____________________________________________________________"
     ]
   },

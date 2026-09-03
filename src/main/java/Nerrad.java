@@ -26,7 +26,14 @@ public class Nerrad {
         System.out.println("What can I do for you?");
         System.out.println(separator);
 
-        List<Task> tasks = new ArrayList<>();
+        List<Task> tasks;
+        try {
+            tasks = loadTasks();
+        } catch (NerradException exception) {
+            System.out.println("\n  OOPS!!! " + exception.getMessage());
+            System.out.println(separator);
+            tasks = new ArrayList<>();
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -198,6 +205,20 @@ public class Nerrad {
             Storage.saveTasks(tasks);
         } catch (IOException exception) {
             throw new NerradException("I could not save your tasks.");
+        }
+    }
+
+    /**
+     * Loads saved tasks and converts file-reading failures into a chatbot error.
+     *
+     * @return tasks saved by a previous run of Nerrad
+     * @throws NerradException if the saved task list cannot be loaded
+     */
+    private static List<Task> loadTasks() throws NerradException {
+        try {
+            return Storage.loadTasks();
+        } catch (IOException exception) {
+            throw new NerradException("I could not load your saved tasks.");
         }
     }
 }
