@@ -2,27 +2,56 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * Entry point for the Nerrad chatbot.
+ * Coordinates Nerrad's user interface, command parser, storage, and task list.
  */
 public class Nerrad {
+    /** User interface used to read commands and display responses. */
+    private final Ui ui;
+
+    /** Parser used to interpret task details and task numbers. */
+    private final Parser parser;
+
+    /** Storage used to load and save this chatbot's task data. */
+    private final Storage storage;
+
+    /** Tasks managed during this chatbot session. */
+    private final TaskList tasks;
+
+    /** Whether startup failed because saved tasks could not be loaded. */
+    private final boolean hasLoadingError;
+
     /**
-     * Starts the chatbot and processes commands until the user enters {@code bye}.
+     * Creates a Nerrad chatbot that stores its tasks at the given path.
      *
-     * @param args command-line arguments; not used
+     * @param filePath path of the task data file
      */
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        Parser parser = new Parser();
-        TaskList tasks;
+    public Nerrad(String filePath) {
+        this.ui = new Ui();
+        this.parser = new Parser();
+        this.storage = new Storage(filePath);
+
+        TaskList loadedTasks;
+        boolean loadingFailed = false;
         try {
-            tasks = loadTasks();
-        } catch (NerradException exception) {
+            loadedTasks = new TaskList(storage.loadTasks());
+        } catch (IOException exception) {
             ui.showLoadingError();
+            loadedTasks = new TaskList();
+            loadingFailed = true;
+        }
+        this.tasks = loadedTasks;
+        this.hasLoadingError = loadingFailed;
+    }
+
+    /**
+     * Starts the chatbot and processes commands until the user enters bye.
+     */
+    public void run() {
+        if (hasLoadingError) {
             return;
         }
 
         ui.showWelcome();
-
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String input = ui.readCommand(scanner);
@@ -43,27 +72,27 @@ public class Nerrad {
             try {
                 if (input.equals("mark") || input.startsWith("mark ")) {
                     int taskIndex = parser.parseTaskIndex(input.substring(4), tasks.size(), "mark");
-                    setTaskDone(tasks, taskIndex, true);
+                    setTaskDone(taskIndex, true);
                     ui.showTaskMarked(tasks.get(taskIndex));
                     continue;
                 }
 
                 if (input.equals("unmark") || input.startsWith("unmark ")) {
                     int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "unmark");
-                    setTaskDone(tasks, taskIndex, false);
+                    setTaskDone(taskIndex, false);
                     ui.showTaskUnmarked(tasks.get(taskIndex));
                     continue;
                 }
 
                 if (input.equals("delete") || input.startsWith("delete ")) {
                     int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "delete");
-                    Task deletedTask = deleteTask(tasks, taskIndex);
+                    Task deletedTask = deleteTask(taskIndex);
                     ui.showTaskDeleted(deletedTask, tasks.size());
                     continue;
                 }
 
                 Task newTask = parser.parseTask(input);
-                addTask(tasks, newTask);
+                addTask(newTask);
                 ui.showTaskAdded(newTask, tasks.size());
             } catch (NerradException exception) {
                 ui.showError(exception.getMessage());
@@ -73,14 +102,22 @@ public class Nerrad {
     }
 
     /**
+     * Starts Nerrad using the normal project-relative data file.
+     *
+     * @param args command-line arguments; not used
+     */
+    public static void main(String[] args) {
+        new Nerrad("data/nerrad.txt").run();
+    }
+
+    /**
      * Saves the current task list and converts file-writing failures into a chatbot error.
      *
-     * @param tasks tasks to save
      * @throws NerradException if the task list cannot be saved
      */
-    private static void saveTasks(TaskList tasks) throws NerradException {
+    private void saveTasks() throws NerradException {
         try {
-            Storage.saveTasks(tasks.getTasks());
+            storage.saveTasks(tasks.getTasks());
         } catch (IOException exception) {
             throw new NerradException("I could not save your tasks.");
         }
@@ -89,14 +126,13 @@ public class Nerrad {
     /**
      * Adds a task only if the changed list can be saved successfully.
      *
-     * @param tasks tasks currently in the list
      * @param newTask task to add
      * @throws NerradException if the changed list cannot be saved
      */
-    private static void addTask(TaskList tasks, Task newTask) throws NerradException {
+    private void addTask(Task newTask) throws NerradException {
         tasks.add(newTask);
         try {
-            saveTasks(tasks);
+            saveTasks();
         } catch (NerradException exception) {
             tasks.remove(tasks.size() - 1);
             throw exception;
@@ -106,24 +142,18 @@ public class Nerrad {
     /**
      * Changes a task's completion status only if the changed list can be saved.
      *
-     * @param tasks tasks currently in the list
      * @param taskIndex index of the task to change
      * @param shouldBeDone desired completion status
      * @throws NerradException if the changed list cannot be saved
      */
-    private static void setTaskDone(TaskList tasks, int taskIndex, boolean shouldBeDone)
-            throws NerradException {
+    private void setTaskDone(int taskIndex, boolean shouldBeDone) throws NerradException {
         boolean wasDone = tasks.get(taskIndex).isDone();
         tasks.setDone(taskIndex, shouldBeDone);
 
         try {
-            saveTasks(tasks);
+            saveTasks();
         } catch (NerradException exception) {
-            if (wasDone) {
-                tasks.setDone(taskIndex, true);
-            } else {
-                tasks.setDone(taskIndex, false);
-            }
+            tasks.setDone(taskIndex, wasDone);
             throw exception;
         }
     }
@@ -131,33 +161,18 @@ public class Nerrad {
     /**
      * Deletes a task only if the changed list can be saved successfully.
      *
-     * @param tasks tasks currently in the list
      * @param taskIndex index of the task to delete
      * @return deleted task
      * @throws NerradException if the changed list cannot be saved
      */
-    private static Task deleteTask(TaskList tasks, int taskIndex) throws NerradException {
+    private Task deleteTask(int taskIndex) throws NerradException {
         Task deletedTask = tasks.remove(taskIndex);
         try {
-            saveTasks(tasks);
+            saveTasks();
             return deletedTask;
         } catch (NerradException exception) {
             tasks.add(taskIndex, deletedTask);
             throw exception;
-        }
-    }
-
-    /**
-     * Loads saved tasks and converts file-reading failures into a chatbot error.
-     *
-     * @return tasks saved by a previous run of Nerrad
-     * @throws NerradException if the saved task list cannot be loaded
-     */
-    private static TaskList loadTasks() throws NerradException {
-        try {
-            return new TaskList(Storage.loadTasks());
-        } catch (IOException exception) {
-            throw new NerradException("I could not load your saved tasks.");
         }
     }
 }
