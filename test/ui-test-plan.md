@@ -813,3 +813,80 @@ Verify that Nerrad reports a clear error and stops before changing a malformed s
 ```json
 []
 ```
+
+## Test case: Find tasks by description keyword
+
+### Aim
+
+Verify that the find command returns only tasks with matching descriptions in their list order and rejects a missing keyword.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo read book",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] read book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by 2019-06-06",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] return book (by: Jun 06 2019)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "todo write report",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] write report",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "find book",
+    "expected_output": [
+      "",
+      "  Here are the matching tasks in your list:",
+      "  1.[T][ ] read book",
+      "  2.[D][ ] return book (by: Jun 06 2019)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "find missing",
+    "expected_output": [
+      "",
+      "  Here are the matching tasks in your list:",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "find",
+    "expected_output": [
+      "",
+      "  OOPS!!! Please provide a keyword to find.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
