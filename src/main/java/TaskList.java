@@ -1,0 +1,97 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Stores tasks and provides the operations used to manage the task list.
+ */
+public class TaskList {
+    /** Tasks currently managed by Nerrad. */
+    private final List<Task> tasks;
+
+    /** Creates an empty task list. */
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
+    /**
+     * Creates a task list containing the supplied saved tasks.
+     *
+     * @param tasks tasks to manage
+     */
+    public TaskList(List<Task> tasks) {
+        this.tasks = new ArrayList<>(tasks);
+    }
+
+    /**
+     * Returns the number of tasks in this list.
+     *
+     * @return number of managed tasks
+     */
+    public int size() {
+        return tasks.size();
+    }
+
+    /**
+     * Returns the task at a zero-based index.
+     *
+     * @param index zero-based task index
+     * @return requested task
+     */
+    public Task get(int index) {
+        return tasks.get(index);
+    }
+
+    /**
+     * Returns a read-only view of the managed tasks for display or saving.
+     *
+     * @return unmodifiable task list view
+     */
+    public List<Task> getTasks() {
+        return Collections.unmodifiableList(tasks);
+    }
+
+    /**
+     * Adds a task to the end of the list.
+     *
+     * @param task task to add
+     */
+    public void add(Task task) {
+        tasks.add(task);
+    }
+
+    /**
+     * Inserts a task at a zero-based index.
+     *
+     * @param index insertion index
+     * @param task task to insert
+     */
+    public void add(int index, Task task) {
+        tasks.add(index, task);
+    }
+
+    /**
+     * Removes and returns the task at a zero-based index.
+     *
+     * @param index index of the task to remove
+     * @return removed task
+     */
+    public Task remove(int index) {
+        return tasks.remove(index);
+    }
+
+    /**
+     * Changes the completion state of a task.
+     *
+     * @param index zero-based index of the task to update
+     * @param shouldBeDone whether the task should be marked done
+     */
+    public void setDone(int index, boolean shouldBeDone) {
+        Task task = get(index);
+        if (shouldBeDone) {
+            task.markAsDone();
+        } else {
+            task.markAsNotDone();
+        }
+    }
+}

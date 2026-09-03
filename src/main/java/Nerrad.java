@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -14,7 +13,7 @@ public class Nerrad {
     public static void main(String[] args) {
         Ui ui = new Ui();
         Parser parser = new Parser();
-        List<Task> tasks;
+        TaskList tasks;
         try {
             tasks = loadTasks();
         } catch (NerradException exception) {
@@ -37,7 +36,7 @@ public class Nerrad {
             }
 
             if (input.equals("list")) {
-                ui.showTaskList(tasks);
+                ui.showTaskList(tasks.getTasks());
                 continue;
             }
 
@@ -79,9 +78,9 @@ public class Nerrad {
      * @param tasks tasks to save
      * @throws NerradException if the task list cannot be saved
      */
-    private static void saveTasks(List<Task> tasks) throws NerradException {
+    private static void saveTasks(TaskList tasks) throws NerradException {
         try {
-            Storage.saveTasks(tasks);
+            Storage.saveTasks(tasks.getTasks());
         } catch (IOException exception) {
             throw new NerradException("I could not save your tasks.");
         }
@@ -94,7 +93,7 @@ public class Nerrad {
      * @param newTask task to add
      * @throws NerradException if the changed list cannot be saved
      */
-    private static void addTask(List<Task> tasks, Task newTask) throws NerradException {
+    private static void addTask(TaskList tasks, Task newTask) throws NerradException {
         tasks.add(newTask);
         try {
             saveTasks(tasks);
@@ -112,23 +111,18 @@ public class Nerrad {
      * @param shouldBeDone desired completion status
      * @throws NerradException if the changed list cannot be saved
      */
-    private static void setTaskDone(List<Task> tasks, int taskIndex, boolean shouldBeDone)
+    private static void setTaskDone(TaskList tasks, int taskIndex, boolean shouldBeDone)
             throws NerradException {
-        Task task = tasks.get(taskIndex);
-        boolean wasDone = task.isDone();
-        if (shouldBeDone) {
-            task.markAsDone();
-        } else {
-            task.markAsNotDone();
-        }
+        boolean wasDone = tasks.get(taskIndex).isDone();
+        tasks.setDone(taskIndex, shouldBeDone);
 
         try {
             saveTasks(tasks);
         } catch (NerradException exception) {
             if (wasDone) {
-                task.markAsDone();
+                tasks.setDone(taskIndex, true);
             } else {
-                task.markAsNotDone();
+                tasks.setDone(taskIndex, false);
             }
             throw exception;
         }
@@ -142,7 +136,7 @@ public class Nerrad {
      * @return deleted task
      * @throws NerradException if the changed list cannot be saved
      */
-    private static Task deleteTask(List<Task> tasks, int taskIndex) throws NerradException {
+    private static Task deleteTask(TaskList tasks, int taskIndex) throws NerradException {
         Task deletedTask = tasks.remove(taskIndex);
         try {
             saveTasks(tasks);
@@ -159,9 +153,9 @@ public class Nerrad {
      * @return tasks saved by a previous run of Nerrad
      * @throws NerradException if the saved task list cannot be loaded
      */
-    private static List<Task> loadTasks() throws NerradException {
+    private static TaskList loadTasks() throws NerradException {
         try {
-            return Storage.loadTasks();
+            return new TaskList(Storage.loadTasks());
         } catch (IOException exception) {
             throw new NerradException("I could not load your saved tasks.");
         }
