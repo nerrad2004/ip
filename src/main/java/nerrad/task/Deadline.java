@@ -1,3 +1,5 @@
+package nerrad.task;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -43,3 +45,4 @@ public class Deadline extends Task {
         return "[D]" + super.toString() + " (by: " + by.format(DISPLAY_DATE_FORMAT) + ")";
     }
 }
+

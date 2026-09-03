@@ -1,5 +1,13 @@
+package nerrad.parser;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
+import nerrad.NerradException;
+import nerrad.task.Deadline;
+import nerrad.task.Event;
+import nerrad.task.Task;
+import nerrad.task.Todo;
 
 /**
  * Interprets user commands and validates the details contained in them.
@@ -102,3 +110,4 @@ public class Parser {
         }
     }
 }
+

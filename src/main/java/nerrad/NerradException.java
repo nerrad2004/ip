@@ -1,3 +1,5 @@
+package nerrad;
+
 /**
  * Represents an invalid command or task input that Nerrad can explain to the user.
  */
@@ -11,3 +13,4 @@ public class NerradException extends Exception {
         super(message);
     }
 }
+

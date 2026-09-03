@@ -1,3 +1,5 @@
+package nerrad.task;
+
 /**
  * Represents a task without an attached date or time.
  */
@@ -21,3 +23,4 @@ public class Todo extends Task {
         return "[T]" + super.toString();
     }
 }
+

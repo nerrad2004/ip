@@ -1,3 +1,5 @@
+package nerrad.task;
+
 /**
  * Represents a task that occurs between a start and an end date or time.
  */
@@ -49,3 +51,4 @@ public class Event extends Task {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }
+
