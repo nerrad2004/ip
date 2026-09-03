@@ -22,6 +22,24 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the start date or time as entered by the user.
+     *
+     * @return event start date or time
+     */
+    public String getFrom() {
+        return from;
+    }
+
+    /**
+     * Returns the end date or time as entered by the user.
+     *
+     * @return event end date or time
+     */
+    public String getTo() {
+        return to;
+    }
+
+    /**
      * Returns the event in its user-facing display format.
      *
      * @return event type icon, common task display, and start/end details

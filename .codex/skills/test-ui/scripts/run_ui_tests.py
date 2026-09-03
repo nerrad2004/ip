@@ -23,6 +23,7 @@ class TestStep:
 
     command: str
     expected_output: list[str]
+    new_session: bool
 
 
 @dataclass(frozen=True)
@@ -32,6 +33,8 @@ class TestCase:
     name: str
     aim: str
     steps: list[TestStep]
+    initial_files: dict[str, str]
+    expected_startup_output: list[str] | None
 
 
 class PlanError(ValueError):
@@ -85,6 +88,23 @@ def resolve_from_repo(repo: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo / path
 
 
+def parse_optional_json_section(section: str, heading: str, test_name: str):
+    """Read an optional JSON code block from a named test-plan section."""
+    match = re.search(
+        rf"^### {re.escape(heading)}\s*$\n\s*```json\s*\n(.*?)^```\s*$",
+        section,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not match:
+        return None
+    try:
+        return json.loads(match.group(1))
+    except json.JSONDecodeError as error:
+        raise PlanError(
+            f"Invalid JSON in '{heading}' for test case '{test_name}': {error}"
+        ) from error
+
+
 def parse_plan(plan_path: Path) -> list[TestCase]:
     """Parse and validate test cases from the Markdown plan."""
     text = plan_path.read_text(encoding="utf-8")
@@ -105,6 +125,32 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
             raise PlanError(f"Test case '{name}' must have a non-empty '### Aim'.")
         aim = " ".join(aim_match.group(1).strip().splitlines())
 
+        initial_files = parse_optional_json_section(section, "Initial files", name) or {}
+        if not isinstance(initial_files, dict) or not all(
+            isinstance(path, str) and isinstance(content, str)
+            for path, content in initial_files.items()
+        ):
+            raise PlanError(
+                f"Test case '{name}': 'Initial files' must map paths to text contents."
+            )
+        for initial_path in initial_files:
+            path = Path(initial_path)
+            if path.is_absolute() or ".." in path.parts:
+                raise PlanError(
+                    f"Test case '{name}': initial file path must stay inside the test folder."
+                )
+
+        expected_startup_output = parse_optional_json_section(
+            section, "Expected startup output", name
+        )
+        if expected_startup_output is not None and (
+            not isinstance(expected_startup_output, list)
+            or not all(isinstance(line, str) for line in expected_startup_output)
+        ):
+            raise PlanError(
+                f"Test case '{name}': 'Expected startup output' must be a list of strings."
+            )
+
         steps_match = re.search(
             r"^### Commands and expected outputs\s*$\n\s*```json\s*\n(.*?)^```\s*$",
             section,
@@ -121,8 +167,12 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
         except json.JSONDecodeError as error:
             raise PlanError(f"Invalid JSON in test case '{name}': {error}") from error
 
-        if not isinstance(raw_steps, list) or not raw_steps:
+        if not isinstance(raw_steps, list) or (not raw_steps and expected_startup_output is None):
             raise PlanError(f"Test case '{name}' must contain at least one command.")
+        if raw_steps and expected_startup_output is not None:
+            raise PlanError(
+                f"Test case '{name}' cannot combine commands with expected startup output."
+            )
 
         steps: list[TestStep] = []
         for step_number, raw_step in enumerate(raw_steps, start=1):
@@ -130,6 +180,7 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
                 raise PlanError(f"Test case '{name}', step {step_number} must be an object.")
             command = raw_step.get("command")
             expected = raw_step.get("expected_output")
+            new_session = raw_step.get("new_session", False)
             if not isinstance(command, str):
                 raise PlanError(
                     f"Test case '{name}', step {step_number}: 'command' must be a string."
@@ -141,9 +192,32 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
                     f"Test case '{name}', step {step_number}: "
                     "'expected_output' must be a list of strings."
                 )
-            steps.append(TestStep(command=command, expected_output=expected))
+            if not isinstance(new_session, bool):
+                raise PlanError(
+                    f"Test case '{name}', step {step_number}: "
+                    "'new_session' must be a boolean."
+                )
+            if step_number == 1 and new_session:
+                raise PlanError(
+                    f"Test case '{name}', step 1 cannot start a new session."
+                )
+            steps.append(
+                TestStep(
+                    command=command,
+                    expected_output=expected,
+                    new_session=new_session,
+                )
+            )
 
-        test_cases.append(TestCase(name=name, aim=aim, steps=steps))
+        test_cases.append(
+            TestCase(
+                name=name,
+                aim=aim,
+                steps=steps,
+                initial_files=initial_files,
+                expected_startup_output=expected_startup_output,
+            )
+        )
 
     return test_cases
 
@@ -204,15 +278,17 @@ def response_lines(response: str) -> list[str]:
     return normalized.split("\n")
 
 
-def print_transcript(test_case: TestCase, output: str) -> None:
+def print_transcript(test_case: TestCase, sessions: list[tuple[list[TestStep], str]]) -> None:
     """Print a complete record of supplied input and captured console output."""
     print(f"\n=== Test case: {test_case.name} ===")
     print(f"Aim: {test_case.aim}")
     print("--- Console input ---")
-    for step in test_case.steps:
-        print(step.command)
-    print("--- Console output ---")
-    print(normalize_newlines(output), end="" if output.endswith(("\n", "\r")) else "\n")
+    for session_number, (steps, output) in enumerate(sessions, start=1):
+        print(f"--- Chatbot session {session_number} input ---")
+        for step in steps:
+            print(step.command)
+        print(f"--- Chatbot session {session_number} output ---")
+        print(normalize_newlines(output), end="" if output.endswith(("\n", "\r")) else "\n")
     print("--- End transcript ---")
 
 
@@ -239,56 +315,87 @@ def print_failure(
     print("\n".join(difference))
 
 
+def print_startup_failure(test_case: TestCase, actual_lines: list[str]) -> None:
+    """Report a startup-output mismatch with readable expected and actual lines."""
+    print(f"FAIL: {test_case.name}, startup output")
+    print("Expected output lines:")
+    print(json.dumps(test_case.expected_startup_output, indent=2))
+    print("Actual output lines:")
+    print(json.dumps(actual_lines, indent=2))
+
+
 def run_test_case(
     test_case: TestCase,
     build_dir: Path,
     main_class: str,
     prompt: str,
     timeout: float,
+    working_dir: Path,
 ) -> bool:
-    """Run one fresh chatbot process and compare every command response."""
-    console_input = "\n".join(step.command for step in test_case.steps) + "\n"
-    try:
-        result = subprocess.run(
-            ["java", "-cp", str(build_dir), main_class],
-            input=console_input,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=timeout,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as error:
-        captured = (error.stdout or "") + (error.stderr or "")
-        print_transcript(test_case, captured)
-        print(f"FAIL: test case exceeded the {timeout:g}-second timeout.")
-        return False
+    """Run one or more chatbot sessions and compare every command response."""
+    session_steps: list[list[TestStep]] = [[]]
+    for step in test_case.steps:
+        if step.new_session:
+            session_steps.append([])
+        session_steps[-1].append(step)
 
-    output = result.stdout + result.stderr
-    print_transcript(test_case, output)
-    if result.returncode != 0:
-        print(f"FAIL: chatbot exited with status {result.returncode}.")
-        return False
-
-    sections = normalize_newlines(output).split(prompt)
-    responses = sections[1:]
-    if len(responses) != len(test_case.steps):
-        print(
-            "FAIL: expected "
-            f"{len(test_case.steps)} prompt(s), but found {len(responses)}. "
-            f"Check the configured prompt {prompt!r}."
-        )
-        return False
-
-    for step_number, (step, response) in enumerate(
-        zip(test_case.steps, responses), start=1
-    ):
-        actual_lines = response_lines(response)
-        if actual_lines != step.expected_output:
-            print_failure(test_case, step_number, step, actual_lines)
+    sessions: list[tuple[list[TestStep], str]] = []
+    step_number = 0
+    for steps in session_steps:
+        console_input = "\n".join(step.command for step in steps) + "\n"
+        try:
+            result = subprocess.run(
+                ["java", "-cp", str(build_dir), main_class],
+                input=console_input,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout,
+                check=False,
+                cwd=working_dir,
+            )
+        except subprocess.TimeoutExpired as error:
+            sessions.append((steps, (error.stdout or "") + (error.stderr or "")))
+            print_transcript(test_case, sessions)
+            print(f"FAIL: test case exceeded the {timeout:g}-second timeout.")
             return False
 
+        output = result.stdout + result.stderr
+        sessions.append((steps, output))
+        if result.returncode != 0:
+            print_transcript(test_case, sessions)
+            print(f"FAIL: chatbot exited with status {result.returncode}.")
+            return False
+
+        if test_case.expected_startup_output is not None:
+            actual_lines = response_lines(output)
+            print_transcript(test_case, sessions)
+            if actual_lines != test_case.expected_startup_output:
+                print_startup_failure(test_case, actual_lines)
+                return False
+            print("PASS")
+            return True
+
+        responses = normalize_newlines(output).split(prompt)[1:]
+        if len(responses) != len(steps):
+            print_transcript(test_case, sessions)
+            print(
+                "FAIL: expected "
+                f"{len(steps)} prompt(s), but found {len(responses)}. "
+                f"Check the configured prompt {prompt!r}."
+            )
+            return False
+
+        for step, response in zip(steps, responses):
+            step_number += 1
+            actual_lines = response_lines(response)
+            if actual_lines != step.expected_output:
+                print_transcript(test_case, sessions)
+                print_failure(test_case, step_number, step, actual_lines)
+                return False
+
+    print_transcript(test_case, sessions)
     print("PASS")
     return True
 
@@ -307,13 +414,20 @@ def main() -> int:
             build_dir = Path(temp_dir)
             compile_sources(source_dir, build_dir)
             print(f"Loaded {len(test_cases)} test case(s) from {plan_path}")
-            for test_case in test_cases:
+            for test_number, test_case in enumerate(test_cases, start=1):
+                working_dir = build_dir / f"test-case-{test_number}"
+                working_dir.mkdir()
+                for relative_path, content in test_case.initial_files.items():
+                    file_path = working_dir / relative_path
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_text(content, encoding="utf-8")
                 if not run_test_case(
                     test_case,
                     build_dir,
                     args.main_class,
                     args.prompt,
                     args.timeout,
+                    working_dir,
                 ):
                     print("Test session terminated after the first failure.")
                     return 1

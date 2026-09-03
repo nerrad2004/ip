@@ -2,7 +2,7 @@
 
 This file is the source of truth for console UI test cases run by the project-specific `test-ui` skill.
 
-For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts a fresh instance of Nerrad and ends with `bye` so the program exits normally.
+For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts in a fresh data folder and ends with `bye` so the program exits normally. A command with `"new_session": true` starts Nerrad again using the same test data folder, which is used to test saved tasks being loaded. A startup-error case can declare `Initial files`, use an empty command list, and verify `Expected startup output` instead.
 
 ## Test case: Add and list a todo
 
@@ -30,6 +30,75 @@ Verify that a task without a date or time is stored and displayed with the Todo 
       "",
       "  Here are the tasks in your list:",
       "  1.[T][ ] borrow book",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Save task changes to disk
+
+### Aim
+
+Verify that adding, marking, unmarking, and deleting tasks complete normally so their current state can be written to the save file.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo save me",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] save me",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline remove me /by Sunday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] remove me (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [T][X] save me",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "unmark 1",
+    "expected_output": [
+      "",
+      "  OK, I've marked this task as not done yet:",
+      "    [T][ ] save me",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "delete 2",
+    "expected_output": [
+      "",
+      "  Noted. I've removed this task:",
+      "    [D][ ] remove me (by: Sunday)",
+      "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
     ]
   },
@@ -566,4 +635,173 @@ Verify that unknown commands show a clear error and do not add an unintended tas
     ]
   }
 ]
+```
+
+## Test case: Save all task types
+
+### Aim
+
+Verify that Todo, Deadline, and Event tasks can all be saved, including a completed task.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo saved todo",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] saved todo",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline saved deadline /by Friday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] saved deadline (by: Friday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event saved event /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [E][ ] saved event (from: Mon 2pm to: 4pm)",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [T][X] saved todo",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Load saved tasks after restarting
+
+### Aim
+
+Verify that Todo, Deadline, and Event tasks, including their done status, are restored when Nerrad starts again.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "todo read book",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [T][ ] read book",
+      "  Now you have 1 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "deadline return book /by Sunday",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [D][ ] return book (by: Sunday)",
+      "  Now you have 2 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "event project meeting /from Mon 2pm /to 4pm",
+    "expected_output": [
+      "",
+      "  Got it. I've added this task:",
+      "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "  Now you have 3 tasks in the list.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "mark 2",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this task as done:",
+      "    [D][X] return book (by: Sunday)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "list",
+    "new_session": true,
+    "expected_output": [
+      "",
+      "  Here are the tasks in your list:",
+      "  1.[T][ ] read book",
+      "  2.[D][X] return book (by: Sunday)",
+      "  3.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Reject corrupted save data
+
+### Aim
+
+Verify that Nerrad reports a clear error and stops before changing a malformed save file.
+
+### Initial files
+
+```json
+{
+  "data/nerrad.txt": "Z | 0 | unknown task"
+}
+```
+
+### Expected startup output
+
+```json
+[
+  "  OOPS!!! I could not load your saved tasks.",
+  "____________________________________________________________"
+]
+```
+
+### Commands and expected outputs
+
+```json
+[]
 ```
