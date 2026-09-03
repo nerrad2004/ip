@@ -31,8 +31,8 @@ public class Ui {
     /**
      * Shows the input prompt and reads one command from the console.
      *
-     * @param scanner scanner connected to standard input
-     * @return the entered command, or {@code null} when there is no more input
+     * @param scanner Scanner connected to standard input.
+     * @return The entered command, or {@code null} when there is no more input.
      */
     public String readCommand(Scanner scanner) {
         System.out.print("You: ");
@@ -49,7 +49,7 @@ public class Ui {
     /**
      * Displays every task currently stored in the task list.
      *
-     * @param tasks tasks to display
+     * @param tasks Tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
         System.out.println("\n  Here are the tasks in your list:");
@@ -62,8 +62,8 @@ public class Ui {
     /**
      * Displays confirmation that a task was added.
      *
-     * @param task task that was added
-     * @param taskCount updated number of tasks
+     * @param task Task that was added.
+     * @param taskCount Updated number of tasks.
      */
     public void showTaskAdded(Task task, int taskCount) {
         System.out.println("\n  Got it. I've added this task:");
@@ -75,7 +75,7 @@ public class Ui {
     /**
      * Displays confirmation that a task was marked as done.
      *
-     * @param task task that was marked
+     * @param task Task that was marked.
      */
     public void showTaskMarked(Task task) {
         System.out.println("\n  Nice! I've marked this task as done:");
@@ -86,7 +86,7 @@ public class Ui {
     /**
      * Displays confirmation that a task was marked as not done.
      *
-     * @param task task that was unmarked
+     * @param task Task that was unmarked.
      */
     public void showTaskUnmarked(Task task) {
         System.out.println("\n  OK, I've marked this task as not done yet:");
@@ -97,8 +97,8 @@ public class Ui {
     /**
      * Displays confirmation that a task was deleted.
      *
-     * @param task task that was deleted
-     * @param taskCount updated number of tasks
+     * @param task Task that was deleted.
+     * @param taskCount Updated number of tasks.
      */
     public void showTaskDeleted(Task task, int taskCount) {
         System.out.println("\n  Noted. I've removed this task:");
@@ -110,7 +110,7 @@ public class Ui {
     /**
      * Displays a user-facing error message.
      *
-     * @param message explanation of the problem
+     * @param message Explanation of the problem.
      */
     public void showError(String message) {
         System.out.println("\n  OOPS!!! " + message);

@@ -18,9 +18,9 @@ public class Parser {
      * Deadlines use a {@link LocalDate} so that they can be validated and
      * displayed consistently.
      *
-     * @param input command entered by the user
-     * @return a todo, deadline, or event represented as a {@link Task}
-     * @throws NerradException if the command does not describe a valid task
+     * @param input Command entered by the user.
+     * @return A todo, deadline, or event represented as a {@link Task}.
+     * @throws NerradException If the command does not describe a valid task.
      */
     public Task parseTask(String input) throws NerradException {
         if (input.equals("todo") || input.startsWith("todo ")) {
@@ -86,11 +86,11 @@ public class Parser {
     /**
      * Converts a task number in a command into a list index.
      *
-     * @param taskNumberText task number typed by the user
-     * @param taskCount number of tasks currently stored
-     * @param command command requesting the task number
-     * @return zero-based index of the requested task
-     * @throws NerradException if the task number is missing, invalid, or outside the list
+     * @param taskNumberText Task number typed by the user.
+     * @param taskCount Number of tasks currently stored.
+     * @param command Command requesting the task number.
+     * @return Zero-based index of the requested task.
+     * @throws NerradException If the task number is missing, invalid, or outside the list.
      */
     public int parseTaskIndex(String taskNumberText, int taskCount, String command)
             throws NerradException {
