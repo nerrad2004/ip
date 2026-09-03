@@ -39,6 +39,9 @@ public class Storage {
         if (Files.notExists(SAVE_FILE)) {
             return new ArrayList<>();
         }
+        if (!Files.isRegularFile(SAVE_FILE)) {
+            throw new IOException("The save path is not a file.");
+        }
 
         List<Task> tasks = new ArrayList<>();
         for (String taskLine : Files.readAllLines(SAVE_FILE, StandardCharsets.UTF_8)) {

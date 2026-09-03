@@ -16,6 +16,8 @@ Use the deterministic runner in `scripts/run_ui_tests.py` to test the chatbot on
    - a JSON list under `### Commands and expected outputs`;
    - one object per command, containing `command` and `expected_output`;
    - `expected_output` is the exact list of output lines produced in response to that command.
+   - For a startup-error scenario, use an empty command list and provide `### Expected startup output` as a JSON list of exact output lines.
+   - Add `### Initial files` with a JSON object mapping relative paths to their text contents when a test requires pre-existing data.
    - For a scenario that restarts the chatbot, add `"new_session": true` to the first command after a completed `bye`. This starts a fresh process while preserving the same test-specific data folder.
 3. Ensure each command sequence ends with the chatbot's exit command so the process terminates normally.
 4. From the repository root, run:
@@ -31,6 +33,7 @@ Use the deterministic runner in `scripts/run_ui_tests.py` to test the chatbot on
 
 - The runner starts each test case with a fresh temporary working directory, so saved data cannot leak into another case.
 - A test case may contain multiple chatbot sessions using `new_session` after a `bye`; those sessions share that test case's temporary data folder.
+- The runner creates any declared initial files inside that temporary directory. Their paths must be relative and cannot leave it.
 - It associates responses with commands using the chatbot prompt, `You: ` by default.
 - It normalizes Windows and Unix line endings, but otherwise compares output lines exactly. Spaces and blank lines matter.
 - It requires Java and `javac` version 25, compiles sources into a temporary directory, and does not modify compiled files in the repository.

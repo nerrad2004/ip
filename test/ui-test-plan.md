@@ -2,7 +2,7 @@
 
 This file is the source of truth for console UI test cases run by the project-specific `test-ui` skill.
 
-For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts in a fresh data folder and ends with `bye` so the program exits normally. A command with `"new_session": true` starts Nerrad again using the same test data folder, which is used to test saved tasks being loaded.
+For each command, `expected_output` lists the exact response lines printed after the `You: ` prompt. Empty strings represent blank lines, and leading spaces are significant. Each test case starts in a fresh data folder and ends with `bye` so the program exits normally. A command with `"new_session": true` starts Nerrad again using the same test data folder, which is used to test saved tasks being loaded. A startup-error case can declare `Initial files`, use an empty command list, and verify `Expected startup output` instead.
 
 ## Test case: Add and list a todo
 
@@ -637,11 +637,11 @@ Verify that unknown commands show a clear error and do not add an unintended tas
 ]
 ```
 
-## Test case: Save all task types for file inspection
+## Test case: Save all task types
 
 ### Aim
 
-Verify that the final save file records Todo, Deadline, and Event task details and completion status in the chosen text format.
+Verify that Todo, Deadline, and Event tasks can all be saved, including a completed task.
 
 ### Commands and expected outputs
 
@@ -775,4 +775,33 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     ]
   }
 ]
+```
+
+## Test case: Reject corrupted save data
+
+### Aim
+
+Verify that Nerrad reports a clear error and stops before changing a malformed save file.
+
+### Initial files
+
+```json
+{
+  "data/nerrad.txt": "Z | 0 | unknown task"
+}
+```
+
+### Expected startup output
+
+```json
+[
+  "  OOPS!!! I could not load your saved tasks.",
+  "____________________________________________________________"
+]
+```
+
+### Commands and expected outputs
+
+```json
+[]
 ```

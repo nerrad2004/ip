@@ -33,6 +33,8 @@ class TestCase:
     name: str
     aim: str
     steps: list[TestStep]
+    initial_files: dict[str, str]
+    expected_startup_output: list[str] | None
 
 
 class PlanError(ValueError):
@@ -86,6 +88,23 @@ def resolve_from_repo(repo: Path, path: Path) -> Path:
     return path if path.is_absolute() else repo / path
 
 
+def parse_optional_json_section(section: str, heading: str, test_name: str):
+    """Read an optional JSON code block from a named test-plan section."""
+    match = re.search(
+        rf"^### {re.escape(heading)}\s*$\n\s*```json\s*\n(.*?)^```\s*$",
+        section,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not match:
+        return None
+    try:
+        return json.loads(match.group(1))
+    except json.JSONDecodeError as error:
+        raise PlanError(
+            f"Invalid JSON in '{heading}' for test case '{test_name}': {error}"
+        ) from error
+
+
 def parse_plan(plan_path: Path) -> list[TestCase]:
     """Parse and validate test cases from the Markdown plan."""
     text = plan_path.read_text(encoding="utf-8")
@@ -106,6 +125,32 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
             raise PlanError(f"Test case '{name}' must have a non-empty '### Aim'.")
         aim = " ".join(aim_match.group(1).strip().splitlines())
 
+        initial_files = parse_optional_json_section(section, "Initial files", name) or {}
+        if not isinstance(initial_files, dict) or not all(
+            isinstance(path, str) and isinstance(content, str)
+            for path, content in initial_files.items()
+        ):
+            raise PlanError(
+                f"Test case '{name}': 'Initial files' must map paths to text contents."
+            )
+        for initial_path in initial_files:
+            path = Path(initial_path)
+            if path.is_absolute() or ".." in path.parts:
+                raise PlanError(
+                    f"Test case '{name}': initial file path must stay inside the test folder."
+                )
+
+        expected_startup_output = parse_optional_json_section(
+            section, "Expected startup output", name
+        )
+        if expected_startup_output is not None and (
+            not isinstance(expected_startup_output, list)
+            or not all(isinstance(line, str) for line in expected_startup_output)
+        ):
+            raise PlanError(
+                f"Test case '{name}': 'Expected startup output' must be a list of strings."
+            )
+
         steps_match = re.search(
             r"^### Commands and expected outputs\s*$\n\s*```json\s*\n(.*?)^```\s*$",
             section,
@@ -122,8 +167,12 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
         except json.JSONDecodeError as error:
             raise PlanError(f"Invalid JSON in test case '{name}': {error}") from error
 
-        if not isinstance(raw_steps, list) or not raw_steps:
+        if not isinstance(raw_steps, list) or (not raw_steps and expected_startup_output is None):
             raise PlanError(f"Test case '{name}' must contain at least one command.")
+        if raw_steps and expected_startup_output is not None:
+            raise PlanError(
+                f"Test case '{name}' cannot combine commands with expected startup output."
+            )
 
         steps: list[TestStep] = []
         for step_number, raw_step in enumerate(raw_steps, start=1):
@@ -160,7 +209,15 @@ def parse_plan(plan_path: Path) -> list[TestCase]:
                 )
             )
 
-        test_cases.append(TestCase(name=name, aim=aim, steps=steps))
+        test_cases.append(
+            TestCase(
+                name=name,
+                aim=aim,
+                steps=steps,
+                initial_files=initial_files,
+                expected_startup_output=expected_startup_output,
+            )
+        )
 
     return test_cases
 
@@ -258,6 +315,15 @@ def print_failure(
     print("\n".join(difference))
 
 
+def print_startup_failure(test_case: TestCase, actual_lines: list[str]) -> None:
+    """Report a startup-output mismatch with readable expected and actual lines."""
+    print(f"FAIL: {test_case.name}, startup output")
+    print("Expected output lines:")
+    print(json.dumps(test_case.expected_startup_output, indent=2))
+    print("Actual output lines:")
+    print(json.dumps(actual_lines, indent=2))
+
+
 def run_test_case(
     test_case: TestCase,
     build_dir: Path,
@@ -302,6 +368,15 @@ def run_test_case(
             print(f"FAIL: chatbot exited with status {result.returncode}.")
             return False
 
+        if test_case.expected_startup_output is not None:
+            actual_lines = response_lines(output)
+            print_transcript(test_case, sessions)
+            if actual_lines != test_case.expected_startup_output:
+                print_startup_failure(test_case, actual_lines)
+                return False
+            print("PASS")
+            return True
+
         responses = normalize_newlines(output).split(prompt)[1:]
         if len(responses) != len(steps):
             print_transcript(test_case, sessions)
@@ -342,6 +417,10 @@ def main() -> int:
             for test_number, test_case in enumerate(test_cases, start=1):
                 working_dir = build_dir / f"test-case-{test_number}"
                 working_dir.mkdir()
+                for relative_path, content in test_case.initial_files.items():
+                    file_path = working_dir / relative_path
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    file_path.write_text(content, encoding="utf-8")
                 if not run_test_case(
                     test_case,
                     build_dir,
