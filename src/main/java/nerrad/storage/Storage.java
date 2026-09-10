@@ -105,30 +105,30 @@ public class Storage {
 
         Task task;
         switch (parts[0]) {
-        case "T":
-            if (parts.length != 3) {
-                throw new IOException("The save file contains an invalid todo.");
-            }
-            task = new Todo(parts[2]);
-            break;
-        case "D":
-            if (parts.length != 4) {
-                throw new IOException("The save file contains an invalid deadline.");
-            }
-            try {
-                task = new Deadline(parts[2], LocalDate.parse(parts[3]));
-            } catch (DateTimeParseException exception) {
-                throw new IOException("The save file contains an invalid deadline date.", exception);
-            }
-            break;
-        case "E":
-            if (parts.length != 5) {
-                throw new IOException("The save file contains an invalid event.");
-            }
-            task = new Event(parts[2], parts[3], parts[4]);
-            break;
-        default:
-            throw new IOException("The save file contains an unknown task type.");
+            case "T":
+                if (parts.length != 3) {
+                    throw new IOException("The save file contains an invalid todo.");
+                }
+                task = new Todo(parts[2]);
+                break;
+            case "D":
+                if (parts.length != 4) {
+                    throw new IOException("The save file contains an invalid deadline.");
+                }
+                try {
+                    task = new Deadline(parts[2], LocalDate.parse(parts[3]));
+                } catch (DateTimeParseException exception) {
+                    throw new IOException("The save file contains an invalid deadline date.", exception);
+                }
+                break;
+            case "E":
+                if (parts.length != 5) {
+                    throw new IOException("The save file contains an invalid event.");
+                }
+                task = new Event(parts[2], parts[3], parts[4]);
+                break;
+            default:
+                throw new IOException("The save file contains an unknown task type.");
         }
 
         if (parts[1].equals("1")) {
