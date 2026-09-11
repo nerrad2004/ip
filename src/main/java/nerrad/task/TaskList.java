@@ -70,12 +70,12 @@ public class TaskList {
     }
 
     /**
-     * Adds a task to the end of the list.
+     * Adds one or more tasks to the end of the list.
      *
-     * @param task Task to add.
+     * @param tasksToAdd Tasks to add, in their desired order.
      */
-    public void add(Task task) {
-        tasks.add(task);
+    public void add(Task... tasksToAdd) {
+        Collections.addAll(tasks, tasksToAdd);
     }
 
     /**
