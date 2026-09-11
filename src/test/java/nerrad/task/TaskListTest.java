@@ -35,8 +35,7 @@ class TaskListTest {
         Todo middleTask = new Todo("return book");
         Todo lastTask = new Todo("buy bread");
 
-        taskList.add(firstTask);
-        taskList.add(lastTask);
+        taskList.add(firstTask, lastTask);
         taskList.add(1, middleTask);
 
         assertEquals(List.of(firstTask, middleTask, lastTask), taskList.getTasks());
