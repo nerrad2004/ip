@@ -40,6 +40,128 @@ public class Ui {
         return scanner.hasNextLine() ? scanner.nextLine() : null;
     }
 
+    /**
+     * Displays one formatted chatbot response in the console.
+     *
+     * @param message Response text to display.
+     */
+    public void showResponse(String message) {
+        System.out.println();
+        System.out.println(message);
+        System.out.println(SEPARATOR);
+    }
+
+    /**
+     * Returns Nerrad's startup greeting without console-only decoration.
+     *
+     * @return Greeting for a graphical user interface.
+     */
+    public String getWelcomeMessage() {
+        return "Hello! I'm Nerrad. My actual name is that backwards! xD\nWhat can I do for you?";
+    }
+
+    /**
+     * Returns Nerrad's farewell message.
+     *
+     * @return Farewell message.
+     */
+    public String getGoodbyeMessage() {
+        return "  Bye! Hope to see you again soon!!!";
+    }
+
+    /**
+     * Returns a formatted task-list message.
+     *
+     * @param tasks Tasks to include in the message.
+     * @return Task-list message.
+     */
+    public String getTaskListMessage(List<Task> tasks) {
+        StringBuilder message = new StringBuilder("  Here are the tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            message.append("\n  ").append(i + 1).append(".").append(tasks.get(i));
+        }
+        return message.toString();
+    }
+
+    /**
+     * Returns a formatted message containing tasks matching a keyword.
+     *
+     * @param matchingTasks Tasks to include in the message.
+     * @return Matching-task message.
+     */
+    public String getMatchingTasksMessage(List<Task> matchingTasks) {
+        StringBuilder message = new StringBuilder("  Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            message.append("\n  ").append(i + 1).append(".").append(matchingTasks.get(i));
+        }
+        return message.toString();
+    }
+
+    /**
+     * Returns a formatted confirmation that a task was added.
+     *
+     * @param task Task that was added.
+     * @param taskCount Updated number of tasks.
+     * @return Added-task confirmation.
+     */
+    public String getTaskAddedMessage(Task task, int taskCount) {
+        return "  Got it. I've added this task:\n"
+                + "    " + task + "\n"
+                + "  Now you have " + taskCount + " tasks in the list.";
+    }
+
+    /**
+     * Returns a formatted confirmation that a task was marked as done.
+     *
+     * @param task Task that was marked.
+     * @return Marked-task confirmation.
+     */
+    public String getTaskMarkedMessage(Task task) {
+        return "  Nice! I've marked this task as done:\n    " + task;
+    }
+
+    /**
+     * Returns a formatted confirmation that a task was marked as not done.
+     *
+     * @param task Task that was unmarked.
+     * @return Unmarked-task confirmation.
+     */
+    public String getTaskUnmarkedMessage(Task task) {
+        return "  OK, I've marked this task as not done yet:\n    " + task;
+    }
+
+    /**
+     * Returns a formatted confirmation that a task was deleted.
+     *
+     * @param task Task that was deleted.
+     * @param taskCount Updated number of tasks.
+     * @return Deleted-task confirmation.
+     */
+    public String getTaskDeletedMessage(Task task, int taskCount) {
+        return "  Noted. I've removed this task:\n"
+                + "    " + task + "\n"
+                + "  Now you have " + taskCount + " tasks in the list.";
+    }
+
+    /**
+     * Returns a formatted user-facing error message.
+     *
+     * @param message Explanation of the problem.
+     * @return Error message.
+     */
+    public String getErrorMessage(String message) {
+        return "  OOPS!!! " + message;
+    }
+
+    /**
+     * Returns the error message used when saved data cannot be loaded.
+     *
+     * @return Loading error message.
+     */
+    public String getLoadingErrorMessage() {
+        return "  OOPS!!! I could not load your saved tasks.";
+    }
+
     /** Displays the farewell message. */
     public void showGoodbye() {
         System.out.println("\n  Bye! Hope to see you again soon!!!");

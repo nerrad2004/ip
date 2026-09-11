@@ -1,0 +1,52 @@
+package nerrad;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+/**
+ * Tests shared command processing used by Nerrad's console and graphical interfaces.
+ */
+class NerradTest {
+    @TempDir
+    Path temporaryDirectory;
+
+    @Test
+    void getResponse_taskCommands_updatesTasksAndFormatsReplies() {
+        Nerrad nerrad = createNerrad();
+
+        assertEquals("  Got it. I've added this task:\n"
+                        + "    [T][ ] read book\n"
+                        + "  Now you have 1 tasks in the list.",
+                nerrad.getResponse("todo read book"));
+        assertEquals("  Nice! I've marked this task as done:\n    [T][X] read book",
+                nerrad.getResponse("mark 1"));
+        assertEquals("  Here are the tasks in your list:\n  1.[T][X] read book",
+                nerrad.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_invalidCommandAndBye_returnsAppropriateReplies() {
+        Nerrad nerrad = createNerrad();
+
+        assertEquals("  OOPS!!! I'm sorry, but I don't know what that means :-(",
+                nerrad.getResponse("unknown"));
+        assertTrue(nerrad.isExitCommand("bye"));
+        assertFalse(nerrad.isExitCommand("list"));
+        assertEquals("  Bye! Hope to see you again soon!!!", nerrad.getResponse("bye"));
+    }
+
+    /**
+     * Creates a chatbot that saves data inside the test's temporary directory.
+     *
+     * @return Chatbot with isolated storage.
+     */
+    private Nerrad createNerrad() {
+        return new Nerrad(temporaryDirectory.resolve("data/nerrad.txt").toString());
+    }
+}

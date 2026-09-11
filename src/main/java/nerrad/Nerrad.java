@@ -43,7 +43,6 @@ public class Nerrad {
         try {
             loadedTasks = new TaskList(storage.loadTasks());
         } catch (IOException exception) {
-            ui.showLoadingError();
             loadedTasks = new TaskList();
             loadingFailed = true;
         }
@@ -56,66 +55,106 @@ public class Nerrad {
      */
     public void run() {
         if (hasLoadingError) {
+            ui.showLoadingError();
             return;
         }
 
         ui.showWelcome();
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String input = ui.readCommand(scanner);
-            if (input == null) {
-                break;
-            }
-
-            if (input.equals("bye")) {
-                ui.showGoodbye();
-                break;
-            }
-
-            if (input.equals("list")) {
-                ui.showTaskList(tasks.getTasks());
-                continue;
-            }
-
-            try {
-                if (input.equals("find") || input.startsWith("find ")) {
-                    String keyword = input.substring(4).trim();
-                    if (keyword.isEmpty()) {
-                        throw new NerradException("Please provide a keyword to find.");
-                    }
-                    ui.showMatchingTasks(tasks.findTasks(keyword));
-                    continue;
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                String input = ui.readCommand(scanner);
+                if (input == null) {
+                    break;
                 }
 
-                if (input.equals("mark") || input.startsWith("mark ")) {
-                    int taskIndex = parser.parseTaskIndex(input.substring(4), tasks.size(), "mark");
-                    setTaskDone(taskIndex, true);
-                    ui.showTaskMarked(tasks.get(taskIndex));
-                    continue;
+                ui.showResponse(getResponse(input));
+                if (isExitCommand(input)) {
+                    break;
                 }
-
-                if (input.equals("unmark") || input.startsWith("unmark ")) {
-                    int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "unmark");
-                    setTaskDone(taskIndex, false);
-                    ui.showTaskUnmarked(tasks.get(taskIndex));
-                    continue;
-                }
-
-                if (input.equals("delete") || input.startsWith("delete ")) {
-                    int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "delete");
-                    Task deletedTask = deleteTask(taskIndex);
-                    ui.showTaskDeleted(deletedTask, tasks.size());
-                    continue;
-                }
-
-                Task newTask = parser.parseTask(input);
-                addTask(newTask);
-                ui.showTaskAdded(newTask, tasks.size());
-            } catch (NerradException exception) {
-                ui.showError(exception.getMessage());
             }
         }
-        scanner.close();
+    }
+
+    /**
+     * Returns the chatbot's reply after processing a user command.
+     *
+     * @param input Command entered by the user.
+     * @return Reply to display to the user.
+     */
+    public String getResponse(String input) {
+        if (hasLoadingError) {
+            return ui.getLoadingErrorMessage();
+        }
+
+        if (isExitCommand(input)) {
+            return ui.getGoodbyeMessage();
+        }
+
+        if (input.equals("list")) {
+            return ui.getTaskListMessage(tasks.getTasks());
+        }
+
+        try {
+            if (input.equals("find") || input.startsWith("find ")) {
+                String keyword = input.substring(4).trim();
+                if (keyword.isEmpty()) {
+                    throw new NerradException("Please provide a keyword to find.");
+                }
+                return ui.getMatchingTasksMessage(tasks.findTasks(keyword));
+            }
+
+            if (input.equals("mark") || input.startsWith("mark ")) {
+                int taskIndex = parser.parseTaskIndex(input.substring(4), tasks.size(), "mark");
+                setTaskDone(taskIndex, true);
+                return ui.getTaskMarkedMessage(tasks.get(taskIndex));
+            }
+
+            if (input.equals("unmark") || input.startsWith("unmark ")) {
+                int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "unmark");
+                setTaskDone(taskIndex, false);
+                return ui.getTaskUnmarkedMessage(tasks.get(taskIndex));
+            }
+
+            if (input.equals("delete") || input.startsWith("delete ")) {
+                int taskIndex = parser.parseTaskIndex(input.substring(6), tasks.size(), "delete");
+                Task deletedTask = deleteTask(taskIndex);
+                return ui.getTaskDeletedMessage(deletedTask, tasks.size());
+            }
+
+            Task newTask = parser.parseTask(input);
+            addTask(newTask);
+            return ui.getTaskAddedMessage(newTask, tasks.size());
+        } catch (NerradException exception) {
+            return ui.getErrorMessage(exception.getMessage());
+        }
+    }
+
+    /**
+     * Returns Nerrad's greeting for graphical user interfaces.
+     *
+     * @return Startup greeting, or a loading error when saved data is invalid.
+     */
+    public String getWelcomeMessage() {
+        return hasLoadingError ? ui.getLoadingErrorMessage() : ui.getWelcomeMessage();
+    }
+
+    /**
+     * Returns whether a command asks Nerrad to exit.
+     *
+     * @param input Command entered by the user.
+     * @return Whether the command is {@code bye}.
+     */
+    public boolean isExitCommand(String input) {
+        return input.equals("bye");
+    }
+
+    /**
+     * Returns whether Nerrad could not load its saved tasks at startup.
+     *
+     * @return Whether task loading failed.
+     */
+    public boolean hasLoadingError() {
+        return hasLoadingError;
     }
 
     /**

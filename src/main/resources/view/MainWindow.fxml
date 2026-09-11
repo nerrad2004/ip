@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0" prefWidth="480.0"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="nerrad.ui.MainWindow">
+    <children>
+        <Label layoutX="16.0" layoutY="12.0" styleClass="app-title" text="Nerrad" />
+        <Label layoutX="16.0" layoutY="34.0" styleClass="app-subtitle" text="Your task chatbot" />
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                    prefHeight="500.0" prefWidth="480.0"
+                    AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="56.0">
+            <content>
+                <VBox fx:id="dialogContainer" prefWidth="460.0" spacing="4.0" />
+            </content>
+        </ScrollPane>
+        <TextField fx:id="userInput" onAction="#handleUserInput" promptText="Type a command, e.g. list"
+                   prefHeight="42.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="6.0"
+                   AnchorPane.rightAnchor="86.0" />
+        <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="42.0"
+                prefWidth="74.0" text="Send" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="6.0" />
+    </children>
+</AnchorPane>

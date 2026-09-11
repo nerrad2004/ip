@@ -247,9 +247,17 @@ def require_java_25() -> None:
             )
 
 
+def imports_javafx(source: Path) -> bool:
+    """Return whether source imports JavaFX and therefore needs Gradle dependencies."""
+    source_text = source.read_text(encoding="utf-8")
+    return bool(re.search(r"^\s*import\s+javafx\.", source_text, re.MULTILINE))
+
+
 def compile_sources(source_dir: Path, build_dir: Path) -> None:
-    """Compile every Java source beneath source_dir into build_dir."""
-    sources = sorted(source_dir.rglob("*.java"))
+    """Compile console sources while leaving JavaFX compilation to Gradle."""
+    sources = sorted(
+        source for source in source_dir.rglob("*.java") if not imports_javafx(source)
+    )
     if not sources:
         raise RuntimeError(f"No Java sources found under {source_dir}")
     result = subprocess.run(
