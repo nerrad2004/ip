@@ -1,0 +1,24 @@
+.dialog-label {
+    -fx-background-color: #dbeafe;
+    -fx-background-radius: 12px 12px 0 12px;
+    -fx-padding: 8px 10px;
+    -fx-text-fill: #1e3a5f;
+}
+
+.reply-label {
+    -fx-background-color: #e2e8f0;
+    -fx-background-radius: 12px 12px 12px 0;
+    -fx-text-fill: #334155;
+}
+
+.avatar {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 50%;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-min-height: 30px;
+    -fx-min-width: 30px;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 30px;
+    -fx-text-fill: white;
+}

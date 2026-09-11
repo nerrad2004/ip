@@ -1,0 +1,38 @@
+.root {
+    -fx-background-color: #f5f7fb;
+    -fx-font-family: "Arial";
+}
+
+.app-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #243b53;
+}
+
+.app-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: #627d98;
+}
+
+.text-field {
+    -fx-background-radius: 8px;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8px;
+    -fx-font-size: 13px;
+}
+
+.button {
+    -fx-background-color: #2563eb;
+    -fx-background-radius: 8px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.scroll-pane,
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
