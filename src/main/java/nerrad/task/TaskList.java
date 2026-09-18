@@ -75,6 +75,10 @@ public class TaskList {
      * @param tasksToAdd Tasks to add, in their desired order.
      */
     public void add(Task... tasksToAdd) {
+        assert tasksToAdd != null : "Tasks to add must not be null.";
+        for (Task task : tasksToAdd) {
+            assert task != null : "A task to add must not be null.";
+        }
         Collections.addAll(tasks, tasksToAdd);
     }
 
