@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import nerrad.loan.Loan;
+import nerrad.loan.LoanType;
 import nerrad.task.Deadline;
 import nerrad.task.Event;
 import nerrad.task.Task;
@@ -66,6 +69,21 @@ class StorageTest {
 
             assertThrows(IOException.class, storage::loadTasks);
         }
+    }
+
+    @Test
+    void saveLoansAndLoadLoans_roundTripsDetailsAndSettlementState() throws IOException {
+        Loan settledLoan = new Loan(LoanType.LENT, "Alex", new BigDecimal("12.50"), "lunch");
+        settledLoan.markAsSettled();
+        Loan outstandingLoan = new Loan(LoanType.BORROWED, "Ben", new BigDecimal("5"), "bus");
+        Storage storage = createStorage();
+
+        storage.saveLoans(List.of(settledLoan, outstandingLoan));
+        List<Loan> loadedLoans = storage.loadLoans();
+
+        assertEquals(2, loadedLoans.size());
+        assertEquals("[LENT][SETTLED] Alex: S$12.50 (lunch)", loadedLoans.get(0).toString());
+        assertEquals("[BORROWED][OUTSTANDING] Ben: S$5.00 (bus)", loadedLoans.get(1).toString());
     }
 
     /**

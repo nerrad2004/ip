@@ -3,6 +3,7 @@ package nerrad.ui;
 import java.util.List;
 import java.util.Scanner;
 
+import nerrad.loan.Loan;
 import nerrad.task.Task;
 
 /**
@@ -141,6 +142,43 @@ public class Ui {
         return "  Noted. I've removed this task:\n"
                 + "    " + task + "\n"
                 + "  Now you have " + taskCount + " tasks in the list.";
+    }
+
+    /**
+     * Returns a formatted loan-list message.
+     *
+     * @param loans Loans to include in the message.
+     * @return Loan-list message.
+     */
+    public String getLoanListMessage(List<Loan> loans) {
+        StringBuilder message = new StringBuilder("  Here are your loan records:");
+        for (int i = 0; i < loans.size(); i++) {
+            message.append("\n  ").append(i + 1).append(".").append(loans.get(i));
+        }
+        return message.toString();
+    }
+
+    /**
+     * Returns a formatted confirmation that a loan was added.
+     *
+     * @param loan Loan that was added.
+     * @param loanCount Updated number of loans.
+     * @return Added-loan confirmation.
+     */
+    public String getLoanAddedMessage(Loan loan, int loanCount) {
+        return "  Got it. I've recorded this loan:\n"
+                + "    " + loan + "\n"
+                + "  You now have " + loanCount + " loan records.";
+    }
+
+    /**
+     * Returns a formatted confirmation that a loan was settled.
+     *
+     * @param loan Loan that was settled.
+     * @return Settled-loan confirmation.
+     */
+    public String getLoanSettledMessage(Loan loan) {
+        return "  Nice! I've marked this loan as settled:\n    " + loan;
     }
 
     /**

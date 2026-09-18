@@ -60,9 +60,7 @@ public class TaskList {
      * @return Matching tasks.
      */
     public List<Task> findTasks(String keyword) {
-        return tasks.stream()
-                .filter(task -> task.getDescription().contains(keyword))
-                .toList();
+        return tasks.stream().filter(task -> task.getDescription().contains(keyword)).toList();
     }
 
     /**

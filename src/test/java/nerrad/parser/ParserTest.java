@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
 import nerrad.NerradException;
+import nerrad.loan.Loan;
+import nerrad.loan.LoanType;
 import nerrad.task.Deadline;
 import nerrad.task.Event;
 import nerrad.task.Todo;
@@ -122,6 +125,30 @@ class ParserTest {
         assertTaskParseError("blah", "I'm sorry, but I don't know what that means :-(");
     }
 
+    @Test
+    void parseLoan_validCommands_returnsLoansWithAllDetails() throws NerradException {
+        Loan lentLoan = parser.parseLoan("loan lend Alex Tan 12.50 /for lunch");
+        Loan borrowedLoan = parser.parseLoan("loan borrow Ben 5");
+
+        assertEquals(LoanType.LENT, lentLoan.getType());
+        assertEquals("Alex Tan", lentLoan.getPerson());
+        assertEquals(new BigDecimal("12.50"), lentLoan.getAmount());
+        assertEquals("lunch", lentLoan.getReason());
+        assertEquals(LoanType.BORROWED, borrowedLoan.getType());
+        assertEquals("", borrowedLoan.getReason());
+    }
+
+    @Test
+    void parseLoan_invalidDetails_throwsHelpfulExceptions() {
+        assertLoanParseError("loan", "A loan needs a person's name and an amount.");
+        assertLoanParseError("loan give Alex 10", "Use loan lend or loan borrow.");
+        assertLoanParseError("loan lend Alex", "A loan needs a person's name and an amount.");
+        String invalidAmountMessage = "The loan amount must be positive with at most two decimal places.";
+        assertLoanParseError("loan lend Alex 0", invalidAmountMessage);
+        assertLoanParseError("loan borrow Ben 1.999", invalidAmountMessage);
+        assertLoanParseError("loan lend Alex 10 /for", "The reason for a loan cannot be empty.");
+    }
+
     /**
      * Verifies that an invalid task command produces the expected explanation.
      *
@@ -130,6 +157,18 @@ class ParserTest {
      */
     private void assertTaskParseError(String input, String expectedMessage) {
         NerradException exception = assertThrows(NerradException.class, () -> parser.parseTask(input));
+
+        assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    /**
+     * Verifies that an invalid loan command produces the expected explanation.
+     *
+     * @param input Command to parse.
+     * @param expectedMessage Expected error explanation.
+     */
+    private void assertLoanParseError(String input, String expectedMessage) {
+        NerradException exception = assertThrows(NerradException.class, () -> parser.parseLoan(input));
 
         assertEquals(expectedMessage, exception.getMessage());
     }

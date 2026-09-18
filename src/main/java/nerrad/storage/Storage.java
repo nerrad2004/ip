@@ -9,6 +9,8 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nerrad.loan.Loan;
+import nerrad.loan.LoanType;
 import nerrad.task.Deadline;
 import nerrad.task.Event;
 import nerrad.task.Task;
@@ -21,6 +23,9 @@ public class Storage {
     /** Location of Nerrad's task data file. */
     private final Path saveFile;
 
+    /** Location of Nerrad's loan data file. */
+    private final Path loanFile;
+
     /**
      * Creates storage that reads from and writes to the given file path.
      *
@@ -28,6 +33,7 @@ public class Storage {
      */
     public Storage(String filePath) {
         this.saveFile = Path.of(filePath);
+        this.loanFile = saveFile.resolveSibling("loans.txt");
     }
 
     /**
@@ -66,6 +72,41 @@ public class Storage {
             tasks.add(parseTask(taskLine));
         }
         return tasks;
+    }
+
+    /**
+     * Writes every loan to the loan save file, replacing its previous contents.
+     *
+     * @param loans Loans to save.
+     * @throws IOException If the data directory or file cannot be written.
+     */
+    public void saveLoans(List<Loan> loans) throws IOException {
+        List<String> loanLines = new ArrayList<>();
+        for (Loan loan : loans) {
+            loanLines.add(formatLoan(loan));
+        }
+        Files.createDirectories(loanFile.getParent());
+        Files.write(loanFile, loanLines, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Loads loans from the loan save file, returning an empty list when it is absent.
+     *
+     * @return Loans reconstructed from the loan save file.
+     * @throws IOException If an existing loan save file cannot be read or understood.
+     */
+    public List<Loan> loadLoans() throws IOException {
+        if (Files.notExists(loanFile)) {
+            return new ArrayList<>();
+        }
+        if (!Files.isRegularFile(loanFile)) {
+            throw new IOException("The loan save path is not a file.");
+        }
+        List<Loan> loans = new ArrayList<>();
+        for (String loanLine : Files.readAllLines(loanFile, StandardCharsets.UTF_8)) {
+            loans.add(parseLoan(loanLine));
+        }
+        return loans;
     }
 
     /**
@@ -135,6 +176,45 @@ public class Storage {
             task.markAsDone();
         }
         return task;
+    }
+
+    /**
+     * Converts a loan into a text line containing its direction, status, and details.
+     *
+     * @param loan Loan to format.
+     * @return Save-file representation of the loan.
+     */
+    private static String formatLoan(Loan loan) {
+        String status = loan.isSettled() ? "1" : "0";
+        return "L | " + loan.getType() + " | " + status + " | " + loan.getPerson()
+                + " | " + loan.getAmount().toPlainString() + " | " + loan.getReason();
+    }
+
+    /**
+     * Reconstructs a loan saved in Nerrad's text-file format.
+     *
+     * @param loanLine One line from the loan save file.
+     * @return Reconstructed loan.
+     * @throws IOException If the line is not in the expected format.
+     */
+    private static Loan parseLoan(String loanLine) throws IOException {
+        String[] parts = loanLine.split(" \\| ", -1);
+        if (parts.length != 6 || !parts[0].equals("L")
+                || (!parts[2].equals("0") && !parts[2].equals("1"))) {
+            throw new IOException("The loan save file contains an invalid loan.");
+        }
+        try {
+            Loan loan = new Loan(LoanType.valueOf(parts[1]), parts[3], new java.math.BigDecimal(parts[4]), parts[5]);
+            if (parts[3].isEmpty() || loan.getAmount().signum() <= 0 || loan.getAmount().scale() > 2) {
+                throw new IOException("The loan save file contains an invalid loan.");
+            }
+            if (parts[2].equals("1")) {
+                loan.markAsSettled();
+            }
+            return loan;
+        } catch (IllegalArgumentException exception) {
+            throw new IOException("The loan save file contains an invalid loan.", exception);
+        }
     }
 }
 

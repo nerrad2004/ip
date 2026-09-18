@@ -890,3 +890,151 @@ Verify that the find command returns only tasks with matching descriptions in th
   }
 ]
 ```
+
+## Test case: Record, settle, and reload loans
+
+### Aim
+
+Verify that lent and borrowed money can be recorded separately from tasks, settled, and restored after restarting Nerrad.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "loan lend Alex Tan 12.50 /for lunch",
+    "expected_output": [
+      "",
+      "  Got it. I've recorded this loan:",
+      "    [LENT][OUTSTANDING] Alex Tan: S$12.50 (lunch)",
+      "  You now have 1 loan records.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loan borrow Ben 5 /for bus fare",
+    "expected_output": [
+      "",
+      "  Got it. I've recorded this loan:",
+      "    [BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
+      "  You now have 2 loan records.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loans",
+    "expected_output": [
+      "",
+      "  Here are your loan records:",
+      "  1.[LENT][OUTSTANDING] Alex Tan: S$12.50 (lunch)",
+      "  2.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "settle-loan 1",
+    "expected_output": [
+      "",
+      "  Nice! I've marked this loan as settled:",
+      "    [LENT][SETTLED] Alex Tan: S$12.50 (lunch)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loans",
+    "new_session": true,
+    "expected_output": [
+      "",
+      "  Here are your loan records:",
+      "  1.[LENT][SETTLED] Alex Tan: S$12.50 (lunch)",
+      "  2.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```
+
+## Test case: Reject invalid loan commands
+
+### Aim
+
+Verify that loan commands reject missing details, invalid directions, invalid amounts, empty reasons, and invalid loan numbers.
+
+### Commands and expected outputs
+
+```json
+[
+  {
+    "command": "loan",
+    "expected_output": [
+      "",
+      "  OOPS!!! A loan needs a person's name and an amount.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loan give Alex 10",
+    "expected_output": [
+      "",
+      "  OOPS!!! Use loan lend or loan borrow.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loan lend Alex 0",
+    "expected_output": [
+      "",
+      "  OOPS!!! The loan amount must be positive with at most two decimal places.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loan borrow Ben 1.999",
+    "expected_output": [
+      "",
+      "  OOPS!!! The loan amount must be positive with at most two decimal places.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "loan lend Alex 10 /for",
+    "expected_output": [
+      "",
+      "  OOPS!!! The reason for a loan cannot be empty.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "settle-loan 1",
+    "expected_output": [
+      "",
+      "  OOPS!!! There is no loan with this number.",
+      "____________________________________________________________"
+    ]
+  },
+  {
+    "command": "bye",
+    "expected_output": [
+      "",
+      "  Bye! Hope to see you again soon!!!",
+      "____________________________________________________________"
+    ]
+  }
+]
+```

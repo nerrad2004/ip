@@ -3,6 +3,8 @@ package nerrad;
 import java.io.IOException;
 import java.util.Scanner;
 
+import nerrad.loan.Loan;
+import nerrad.loan.LoanList;
 import nerrad.parser.Parser;
 import nerrad.storage.Storage;
 import nerrad.task.Task;
@@ -25,6 +27,9 @@ public class Nerrad {
     /** Tasks managed during this chatbot session. */
     private final TaskList tasks;
 
+    /** Loans managed during this chatbot session. */
+    private final LoanList loans;
+
     /** Whether startup failed because saved tasks could not be loaded. */
     private final boolean hasLoadingError;
 
@@ -39,14 +44,18 @@ public class Nerrad {
         this.storage = new Storage(filePath);
 
         TaskList loadedTasks;
+        LoanList loadedLoans;
         boolean loadingFailed = false;
         try {
             loadedTasks = new TaskList(storage.loadTasks());
+            loadedLoans = new LoanList(storage.loadLoans());
         } catch (IOException exception) {
             loadedTasks = new TaskList();
+            loadedLoans = new LoanList();
             loadingFailed = true;
         }
         this.tasks = loadedTasks;
+        this.loans = loadedLoans;
         this.hasLoadingError = loadingFailed;
     }
 
@@ -93,6 +102,9 @@ public class Nerrad {
         if (input.equals("list")) {
             return ui.getTaskListMessage(tasks.getTasks());
         }
+        if (input.equals("loans")) {
+            return ui.getLoanListMessage(loans.getLoans());
+        }
 
         try {
             if (input.equals("find") || input.startsWith("find ")) {
@@ -101,6 +113,18 @@ public class Nerrad {
                     throw new NerradException("Please provide a keyword to find.");
                 }
                 return ui.getMatchingTasksMessage(tasks.findTasks(keyword));
+            }
+
+            if (input.equals("settle-loan") || input.startsWith("settle-loan ")) {
+                int loanIndex = parser.parseLoanIndex(input.substring(11), loans.size());
+                settleLoan(loanIndex);
+                return ui.getLoanSettledMessage(loans.get(loanIndex));
+            }
+
+            if (input.equals("loan") || input.startsWith("loan ")) {
+                Loan newLoan = parser.parseLoan(input);
+                addLoan(newLoan);
+                return ui.getLoanAddedMessage(newLoan, loans.size());
             }
 
             if (input.equals("mark") || input.startsWith("mark ")) {
@@ -228,6 +252,55 @@ public class Nerrad {
             return deletedTask;
         } catch (NerradException exception) {
             tasks.add(taskIndex, deletedTask);
+            throw exception;
+        }
+    }
+
+    /**
+     * Saves the current loan list and converts file-writing failures into a chatbot error.
+     *
+     * @throws NerradException If the loan list cannot be saved.
+     */
+    private void saveLoans() throws NerradException {
+        try {
+            storage.saveLoans(loans.getLoans());
+        } catch (IOException exception) {
+            throw new NerradException("I could not save your loans.");
+        }
+    }
+
+    /**
+     * Adds a loan only if the changed list can be saved successfully.
+     *
+     * @param newLoan Loan to add.
+     * @throws NerradException If the changed list cannot be saved.
+     */
+    private void addLoan(Loan newLoan) throws NerradException {
+        loans.add(newLoan);
+        try {
+            saveLoans();
+        } catch (NerradException exception) {
+            loans.remove(loans.size() - 1);
+            throw exception;
+        }
+    }
+
+    /**
+     * Marks a loan as settled only if the changed list can be saved successfully.
+     *
+     * @param loanIndex Index of the loan to settle.
+     * @throws NerradException If the changed list cannot be saved.
+     */
+    private void settleLoan(int loanIndex) throws NerradException {
+        Loan loan = loans.get(loanIndex);
+        boolean wasSettled = loan.isSettled();
+        loan.markAsSettled();
+        try {
+            saveLoans();
+        } catch (NerradException exception) {
+            if (!wasSettled) {
+                loan.markAsOutstanding();
+            }
             throw exception;
         }
     }

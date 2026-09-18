@@ -41,6 +41,24 @@ class NerradTest {
         assertEquals("  Bye! Hope to see you again soon!!!", nerrad.getResponse("bye"));
     }
 
+    @Test
+    void getResponse_loanCommands_persistAndSettleLoan() {
+        Nerrad nerrad = createNerrad();
+
+        assertEquals("  Got it. I've recorded this loan:\n"
+                        + "    [LENT][OUTSTANDING] Alex: S$12.50 (lunch)\n"
+                        + "  You now have 1 loan records.",
+                nerrad.getResponse("loan lend Alex 12.50 /for lunch"));
+        assertEquals("  Nice! I've marked this loan as settled:\n"
+                        + "    [LENT][SETTLED] Alex: S$12.50 (lunch)",
+                nerrad.getResponse("settle-loan 1"));
+
+        Nerrad restartedNerrad = createNerrad();
+        assertEquals("  Here are your loan records:\n"
+                        + "  1.[LENT][SETTLED] Alex: S$12.50 (lunch)",
+                restartedNerrad.getResponse("loans"));
+    }
+
     /**
      * Creates a chatbot that saves data inside the test's temporary directory.
      *
