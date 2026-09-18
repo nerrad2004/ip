@@ -44,6 +44,13 @@ class TaskListTest {
     }
 
     @Test
+    void add_nullTask_assertionErrorThrown() {
+        TaskList taskList = new TaskList();
+
+        assertThrows(AssertionError.class, () -> taskList.add((Task) null));
+    }
+
+    @Test
     void setDone_markAndUnmarkTask_updatesCompletionState() {
         TaskList taskList = new TaskList();
         taskList.add(new Todo("read book"));
