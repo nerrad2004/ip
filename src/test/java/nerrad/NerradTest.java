@@ -62,6 +62,18 @@ class NerradTest {
     }
 
     @Test
+    void getDashboardSummary_taskAndLoanChanges_updatesCounts() {
+        Nerrad nerrad = createNerrad();
+
+        assertEquals("0 tasks  ·  0 complete  ·  0 loan records", nerrad.getDashboardSummary());
+        nerrad.getResponse("todo read book");
+        nerrad.getResponse("loan lend Alex 10");
+        nerrad.getResponse("mark 1");
+
+        assertEquals("1 tasks  ·  1 complete  ·  1 loan records", nerrad.getDashboardSummary());
+    }
+
+    @Test
     void constructor_corruptedLoanData_reportsLoadingError() throws IOException {
         Path loanFile = temporaryDirectory.resolve("data/loans.txt");
         Files.createDirectories(loanFile.getParent());

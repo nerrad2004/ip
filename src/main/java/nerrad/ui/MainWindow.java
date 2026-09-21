@@ -3,6 +3,7 @@ package nerrad.ui;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -25,6 +26,9 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
+    @FXML
+    private Label summaryLabel;
+
     private Nerrad nerrad;
 
     /**
@@ -44,6 +48,7 @@ public class MainWindow extends AnchorPane {
     public void setNerrad(Nerrad nerrad) {
         this.nerrad = nerrad;
         dialogContainer.getChildren().add(DialogBox.getNerradDialog(nerrad.getWelcomeMessage()));
+        updateSummary();
         if (nerrad.hasLoadingError()) {
             userInput.setDisable(true);
             sendButton.setDisable(true);
@@ -61,11 +66,17 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getUserDialog(input),
                 DialogBox.getNerradDialog(response)
         );
+        updateSummary();
         userInput.clear();
         userInput.requestFocus();
 
         if (nerrad.isExitCommand(input)) {
             Platform.exit();
         }
+    }
+
+    /** Updates the compact overview shown below the window heading. */
+    private void updateSummary() {
+        summaryLabel.setText(nerrad.getDashboardSummary());
     }
 }

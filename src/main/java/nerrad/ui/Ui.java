@@ -182,6 +182,19 @@ public class Ui {
     }
 
     /**
+     * Returns a short summary for the graphical user interface header.
+     *
+     * @param taskCount Number of tasks.
+     * @param completedTaskCount Number of completed tasks.
+     * @param loanCount Number of loan records.
+     * @return Compact task and loan summary.
+     */
+    public String getDashboardSummary(int taskCount, int completedTaskCount, int loanCount) {
+        return taskCount + " tasks  ·  " + completedTaskCount + " complete  ·  "
+                + loanCount + " loan records";
+    }
+
+    /**
      * Returns a formatted user-facing error message.
      *
      * @param message Explanation of the problem.

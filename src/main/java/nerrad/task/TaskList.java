@@ -54,6 +54,15 @@ public class TaskList {
     }
 
     /**
+     * Returns the number of completed tasks in this list.
+     *
+     * @return Number of completed tasks.
+     */
+    public int getCompletedCount() {
+        return (int) tasks.stream().filter(Task::isDone).count();
+    }
+
+    /**
      * Returns tasks whose descriptions contain the given keyword in their current order.
      *
      * @param keyword Keyword to search for.

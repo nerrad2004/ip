@@ -63,6 +63,16 @@ class TaskListTest {
     }
 
     @Test
+    void getCompletedCount_mixedCompletionStates_returnsCorrectCount() {
+        TaskList taskList = new TaskList();
+        Todo completedTask = new Todo("read book");
+        completedTask.markAsDone();
+        taskList.add(completedTask, new Todo("write report"));
+
+        assertEquals(1, taskList.getCompletedCount());
+    }
+
+    @Test
     void findTasks_matchingDescriptions_returnsTasksInListOrder() {
         TaskList taskList = new TaskList();
         Todo firstMatch = new Todo("read book");

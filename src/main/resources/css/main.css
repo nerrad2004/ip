@@ -24,6 +24,14 @@
     -fx-text-fill: #a9c7c9;
 }
 
+.summary-pill {
+    -fx-background-color: #e5eddd;
+    -fx-background-radius: 10px;
+    -fx-font-size: 10px;
+    -fx-padding: 3px 8px;
+    -fx-text-fill: #526a49;
+}
+
 .text-field {
     -fx-background-color: #fffaf1;
     -fx-background-radius: 14px;

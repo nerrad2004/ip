@@ -163,6 +163,15 @@ public class Nerrad {
     }
 
     /**
+     * Returns a compact overview of tasks and loans for the graphical interface.
+     *
+     * @return Task, completion, and loan counts.
+     */
+    public String getDashboardSummary() {
+        return ui.getDashboardSummary(tasks.size(), tasks.getCompletedCount(), loans.size());
+    }
+
+    /**
      * Returns whether a command asks Nerrad to exit.
      *
      * @param input Command entered by the user.
