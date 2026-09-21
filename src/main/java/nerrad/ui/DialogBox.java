@@ -3,6 +3,7 @@ package nerrad.ui;
 import java.io.IOException;
 import java.util.Collections;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +17,10 @@ import javafx.scene.layout.HBox;
  * Represents one chat message with a speaker avatar and a text bubble.
  */
 public class DialogBox extends HBox {
+    private static final String ERROR_PREFIX = "  OOPS!!!";
+    private static final double MINIMUM_BUBBLE_WIDTH = 180.0;
+    private static final double BUBBLE_WIDTH_OFFSET = 80.0;
+
     @FXML
     private Label dialog;
 
@@ -35,6 +40,8 @@ public class DialogBox extends HBox {
         getStylesheets().add(DialogBox.class.getResource("/css/dialog-box.css").toExternalForm());
         dialog.setText(text);
         avatar.setText(avatarText);
+        dialog.maxWidthProperty().bind(
+                Bindings.max(widthProperty().subtract(BUBBLE_WIDTH_OFFSET), MINIMUM_BUBBLE_WIDTH));
     }
 
     /**
@@ -67,6 +74,10 @@ public class DialogBox extends HBox {
     public static DialogBox getNerradDialog(String text) {
         DialogBox dialogBox = new DialogBox(text, "N");
         dialogBox.flip();
+        if (text.startsWith(ERROR_PREFIX)) {
+            dialogBox.dialog.getStyleClass().add("error-label");
+            dialogBox.avatar.getStyleClass().add("error-avatar");
+        }
         return dialogBox;
     }
 }

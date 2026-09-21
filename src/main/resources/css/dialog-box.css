@@ -1,18 +1,24 @@
 .dialog-label {
-    -fx-background-color: #dbeafe;
-    -fx-background-radius: 12px 12px 0 12px;
-    -fx-padding: 8px 10px;
-    -fx-text-fill: #1e3a5f;
+    -fx-background-color: #dce8d5;
+    -fx-background-radius: 16px 16px 3px 16px;
+    -fx-effect: dropshadow(gaussian, rgba(74, 64, 53, 0.12), 8, 0.2, 0, 2);
+    -fx-padding: 9px 12px;
+    -fx-text-fill: #35462f;
 }
 
 .reply-label {
-    -fx-background-color: #e2e8f0;
-    -fx-background-radius: 12px 12px 12px 0;
-    -fx-text-fill: #334155;
+    -fx-background-color: #fff9eb;
+    -fx-background-radius: 16px 16px 16px 3px;
+    -fx-text-fill: #4a4035;
+}
+
+.error-label {
+    -fx-background-color: #f6ddd1;
+    -fx-text-fill: #863e30;
 }
 
 .avatar {
-    -fx-background-color: #2563eb;
+    -fx-background-color: #6d855e;
     -fx-background-radius: 50%;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
@@ -21,4 +27,8 @@
     -fx-pref-height: 30px;
     -fx-pref-width: 30px;
     -fx-text-fill: white;
+}
+
+.error-avatar {
+    -fx-background-color: #bd684e;
 }

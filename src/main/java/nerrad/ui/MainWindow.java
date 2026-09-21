@@ -33,6 +33,7 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         dialogContainer.heightProperty().addListener((observable) -> scrollPane.setVvalue(1.0));
+        dialogContainer.prefWidthProperty().bind(scrollPane.widthProperty().subtract(2.0));
     }
 
     /**
@@ -61,6 +62,7 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getNerradDialog(response)
         );
         userInput.clear();
+        userInput.requestFocus();
 
         if (nerrad.isExitCommand(input)) {
             Platform.exit();
