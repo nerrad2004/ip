@@ -37,6 +37,13 @@ class StorageTest {
     }
 
     @Test
+    void loadLoans_missingSaveFile_returnsEmptyList() throws IOException {
+        Storage storage = createStorage();
+
+        assertTrue(storage.loadLoans().isEmpty());
+    }
+
+    @Test
     void saveTasksAndLoadTasks_mixedTasks_roundTripsAllDetailsAndStatuses() throws IOException {
         List<Task> tasks = new ArrayList<>();
         Todo completedTodo = new Todo("read book");
@@ -84,6 +91,24 @@ class StorageTest {
         assertEquals(2, loadedLoans.size());
         assertEquals("[LENT][SETTLED] Alex: S$12.50 (lunch)", loadedLoans.get(0).toString());
         assertEquals("[BORROWED][OUTSTANDING] Ben: S$5.00 (bus)", loadedLoans.get(1).toString());
+    }
+
+    @Test
+    void loadLoans_corruptedSaveData_throwsIOException() throws IOException {
+        Path loanFile = temporaryDirectory.resolve("data").resolve("loans.txt");
+        Files.createDirectories(loanFile.getParent());
+        Storage storage = createStorage();
+
+        for (String invalidLoanLine : List.of(
+                "T | 0 | task saved in the wrong file",
+                "L | GIFTED | 0 | Alex | 10 | lunch",
+                "L | LENT | 2 | Alex | 10 | lunch",
+                "L | LENT | 0 | Alex | 0 | lunch",
+                "L | LENT | 0 | Alex | unknown | lunch")) {
+            Files.writeString(loanFile, invalidLoanLine);
+
+            assertThrows(IOException.class, storage::loadLoans);
+        }
     }
 
     /**

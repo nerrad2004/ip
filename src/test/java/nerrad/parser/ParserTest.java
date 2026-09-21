@@ -149,6 +149,16 @@ class ParserTest {
         assertLoanParseError("loan lend Alex 10 /for", "The reason for a loan cannot be empty.");
     }
 
+    @Test
+    void parseLoanIndex_validAndInvalidLoanNumbers_returnIndexesOrHelpfulErrors() throws NerradException {
+        assertEquals(0, parser.parseLoanIndex("1", 2));
+        assertEquals(1, parser.parseLoanIndex(" 2 ", 2));
+        assertLoanIndexParseError("", 2, "Please provide a loan number to settle.");
+        assertLoanIndexParseError("one", 2, "The loan number must be a whole number.");
+        assertLoanIndexParseError("0", 2, "There is no loan with this number.");
+        assertLoanIndexParseError("3", 2, "There is no loan with this number.");
+    }
+
     /**
      * Verifies that an invalid task command produces the expected explanation.
      *
@@ -169,6 +179,20 @@ class ParserTest {
      */
     private void assertLoanParseError(String input, String expectedMessage) {
         NerradException exception = assertThrows(NerradException.class, () -> parser.parseLoan(input));
+
+        assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    /**
+     * Verifies that an invalid loan number produces the expected explanation.
+     *
+     * @param loanNumberText Loan number to parse.
+     * @param loanCount Number of loans available.
+     * @param expectedMessage Expected error explanation.
+     */
+    private void assertLoanIndexParseError(String loanNumberText, int loanCount, String expectedMessage) {
+        NerradException exception = assertThrows(NerradException.class,
+                () -> parser.parseLoanIndex(loanNumberText, loanCount));
 
         assertEquals(expectedMessage, exception.getMessage());
     }

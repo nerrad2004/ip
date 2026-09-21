@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
@@ -57,6 +59,18 @@ class NerradTest {
         assertEquals("  Here are your loan records:\n"
                         + "  1.[LENT][SETTLED] Alex: S$12.50 (lunch)",
                 restartedNerrad.getResponse("loans"));
+    }
+
+    @Test
+    void constructor_corruptedLoanData_reportsLoadingError() throws IOException {
+        Path loanFile = temporaryDirectory.resolve("data/loans.txt");
+        Files.createDirectories(loanFile.getParent());
+        Files.writeString(loanFile, "L | LENT | invalid status | Alex | 10 | lunch");
+
+        Nerrad nerrad = createNerrad();
+
+        assertTrue(nerrad.hasLoadingError());
+        assertEquals("  OOPS!!! I could not load your saved tasks.", nerrad.getWelcomeMessage());
     }
 
     /**
