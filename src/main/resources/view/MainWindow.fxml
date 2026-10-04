@@ -13,7 +13,7 @@
             fx:controller="nerrad.ui.MainWindow">
     <children>
         <Label layoutX="16.0" layoutY="12.0" styleClass="app-title" text="Nerrad" />
-        <Label layoutX="16.0" layoutY="36.0" styleClass="app-subtitle" text="A small companion for your day" />
+        <Label layoutX="16.0" layoutY="36.0" styleClass="app-subtitle" text="A quiet forest companion for your day" />
         <Label fx:id="summaryLabel" layoutX="16.0" layoutY="54.0" styleClass="summary-pill" />
         <Label layoutX="438.0" layoutY="13.0" styleClass="header-accent" text="✦" />
         <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER"
@@ -24,9 +24,9 @@
                 <VBox fx:id="dialogContainer" prefWidth="460.0" spacing="4.0" />
             </content>
         </ScrollPane>
-        <Label styleClass="command-hint" text="Try: todo, list, loans, find, or bye  ✦"
+        <Label styleClass="command-hint" text="Choose a path: todo, list, loans, find, or bye  ✦"
                AnchorPane.bottomAnchor="54.0" AnchorPane.leftAnchor="8.0" />
-        <TextField fx:id="userInput" onAction="#handleUserInput" promptText="Type a command, e.g. list"
+        <TextField fx:id="userInput" onAction="#handleUserInput" promptText="What shall we tend to today?"
                    prefHeight="42.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="6.0"
                    AnchorPane.rightAnchor="86.0" />
         <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="42.0"

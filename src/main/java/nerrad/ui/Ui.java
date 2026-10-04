@@ -24,8 +24,8 @@ public class Ui {
     public void showWelcome() {
         System.out.println(SEPARATOR);
         System.out.print(BANNER);
-        System.out.println("\nHello! I'm Nerrad. My actual name is that backwards! xD");
-        System.out.println("What can I do for you?");
+        System.out.println("\nWelcome, wanderer. I'm Nerrad - Darren from the other side.");
+        System.out.println("Let's clear the path ahead, one task at a time.");
         System.out.println(SEPARATOR);
     }
 
@@ -58,7 +58,8 @@ public class Ui {
      * @return Greeting for a graphical user interface.
      */
     public String getWelcomeMessage() {
-        return "Hello! I'm Nerrad. My actual name is that backwards! xD\nWhat can I do for you?";
+        return "Welcome, wanderer. I'm Nerrad - Darren from the other side.\n"
+                + "Let's clear the path ahead, one task at a time.";
     }
 
     /**
@@ -67,7 +68,7 @@ public class Ui {
      * @return Farewell message.
      */
     public String getGoodbyeMessage() {
-        return "  Bye! Hope to see you again soon!!!";
+        return "  Safe travels. May your path stay clear.";
     }
 
     /**
@@ -77,7 +78,7 @@ public class Ui {
      * @return Task-list message.
      */
     public String getTaskListMessage(List<Task> tasks) {
-        StringBuilder message = new StringBuilder("  Here are the tasks in your list:");
+        StringBuilder message = new StringBuilder("  Here is the path ahead:");
         for (int i = 0; i < tasks.size(); i++) {
             message.append("\n  ").append(i + 1).append(".").append(tasks.get(i));
         }
@@ -91,7 +92,7 @@ public class Ui {
      * @return Matching-task message.
      */
     public String getMatchingTasksMessage(List<Task> matchingTasks) {
-        StringBuilder message = new StringBuilder("  Here are the matching tasks in your list:");
+        StringBuilder message = new StringBuilder("  Here are the matching waypoints:");
         for (int i = 0; i < matchingTasks.size(); i++) {
             message.append("\n  ").append(i + 1).append(".").append(matchingTasks.get(i));
         }
@@ -106,7 +107,7 @@ public class Ui {
      * @return Added-task confirmation.
      */
     public String getTaskAddedMessage(Task task, int taskCount) {
-        return "  Got it. I've added this task:\n"
+        return "  Placed on your path:\n"
                 + "    " + task + "\n"
                 + "  Now you have " + taskCount + " tasks in the list.";
     }
@@ -118,7 +119,7 @@ public class Ui {
      * @return Marked-task confirmation.
      */
     public String getTaskMarkedMessage(Task task) {
-        return "  Nice! I've marked this task as done:\n    " + task;
+        return "  A bright step forward - this task is complete:\n    " + task;
     }
 
     /**
@@ -128,7 +129,7 @@ public class Ui {
      * @return Unmarked-task confirmation.
      */
     public String getTaskUnmarkedMessage(Task task) {
-        return "  OK, I've marked this task as not done yet:\n    " + task;
+        return "  No worries. This task can wait a little longer:\n    " + task;
     }
 
     /**
@@ -139,7 +140,7 @@ public class Ui {
      * @return Deleted-task confirmation.
      */
     public String getTaskDeletedMessage(Task task, int taskCount) {
-        return "  Noted. I've removed this task:\n"
+        return "  Released from your path:\n"
                 + "    " + task + "\n"
                 + "  Now you have " + taskCount + " tasks in the list.";
     }
@@ -151,7 +152,7 @@ public class Ui {
      * @return Loan-list message.
      */
     public String getLoanListMessage(List<Loan> loans) {
-        StringBuilder message = new StringBuilder("  Here are your loan records:");
+        StringBuilder message = new StringBuilder("  Here is your loan ledger:");
         for (int i = 0; i < loans.size(); i++) {
             message.append("\n  ").append(i + 1).append(".").append(loans.get(i));
         }
@@ -166,7 +167,7 @@ public class Ui {
      * @return Added-loan confirmation.
      */
     public String getLoanAddedMessage(Loan loan, int loanCount) {
-        return "  Got it. I've recorded this loan:\n"
+        return "  Kept safely in your ledger:\n"
                 + "    " + loan + "\n"
                 + "  You now have " + loanCount + " loan records.";
     }
@@ -178,7 +179,7 @@ public class Ui {
      * @return Settled-loan confirmation.
      */
     public String getLoanSettledMessage(Loan loan) {
-        return "  Nice! I've marked this loan as settled:\n    " + loan;
+        return "  Your ledger is balanced for this loan:\n    " + loan;
     }
 
     /**

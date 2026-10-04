@@ -18,7 +18,7 @@ Verify that a task without a date or time is stored and displayed with the Todo 
     "command": "todo borrow book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] borrow book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -28,7 +28,7 @@ Verify that a task without a date or time is stored and displayed with the Todo 
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[T][ ] borrow book",
       "____________________________________________________________"
     ]
@@ -37,7 +37,7 @@ Verify that a task without a date or time is stored and displayed with the Todo 
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -58,7 +58,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "todo save me",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] save me",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -68,7 +68,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "deadline remove me /by 2019-12-03",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] remove me (by: Dec 03 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -78,7 +78,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "mark 1",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [T][X] save me",
       "____________________________________________________________"
     ]
@@ -87,7 +87,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "unmark 1",
     "expected_output": [
       "",
-      "  OK, I've marked this task as not done yet:",
+      "  No worries. This task can wait a little longer:",
       "    [T][ ] save me",
       "____________________________________________________________"
     ]
@@ -96,7 +96,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "delete 2",
     "expected_output": [
       "",
-      "  Noted. I've removed this task:",
+      "  Released from your path:",
       "    [D][ ] remove me (by: Dec 03 2019)",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -106,7 +106,7 @@ Verify that adding, marking, unmarking, and deleting tasks complete normally so 
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -127,7 +127,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "todo read book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] read book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -137,7 +137,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -147,7 +147,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "event project meeting /from Mon 2pm /to 4pm",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "  Now you have 3 tasks in the list.",
       "____________________________________________________________"
@@ -157,7 +157,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "mark 2",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [D][X] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
@@ -166,7 +166,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "delete 2",
     "expected_output": [
       "",
-      "  Noted. I've removed this task:",
+      "  Released from your path:",
       "    [D][X] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -176,7 +176,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[T][ ] read book",
       "  2.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "____________________________________________________________"
@@ -210,7 +210,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "delete 1",
     "expected_output": [
       "",
-      "  Noted. I've removed this task:",
+      "  Released from your path:",
       "    [T][ ] read book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -220,7 +220,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -229,7 +229,7 @@ Verify that deleting a selected task displays the removed task, decreases the ta
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -250,7 +250,7 @@ Verify that a deadline stores a valid date and displays it in a readable format.
     "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -260,7 +260,7 @@ Verify that a deadline stores a valid date and displays it in a readable format.
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[D][ ] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
@@ -269,7 +269,7 @@ Verify that a deadline stores a valid date and displays it in a readable format.
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -290,7 +290,7 @@ Verify that an event stores and displays both its start and end date/time exactl
     "command": "event project meeting /from Mon 2pm /to 4pm",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -300,7 +300,7 @@ Verify that an event stores and displays both its start and end date/time exactl
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -309,7 +309,7 @@ Verify that an event stores and displays both its start and end date/time exactl
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -330,7 +330,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "todo read book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] read book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -340,7 +340,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "deadline return book /by 2019-06-06",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] return book (by: Jun 06 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -350,7 +350,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "event project meeting /from Aug 6th 2pm /to 4pm",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)",
       "  Now you have 3 tasks in the list.",
       "____________________________________________________________"
@@ -360,7 +360,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "mark 1",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [T][X] read book",
       "____________________________________________________________"
     ]
@@ -369,7 +369,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "mark 3",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [E][X] project meeting (from: Aug 6th 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -378,7 +378,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[T][X] read book",
       "  2.[D][ ] return book (by: Jun 06 2019)",
       "  3.[E][X] project meeting (from: Aug 6th 2pm to: 4pm)",
@@ -389,7 +389,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "unmark 3",
     "expected_output": [
       "",
-      "  OK, I've marked this task as not done yet:",
+      "  No worries. This task can wait a little longer:",
       "    [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)",
       "____________________________________________________________"
     ]
@@ -398,7 +398,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[T][X] read book",
       "  2.[D][ ] return book (by: Jun 06 2019)",
       "  3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)",
@@ -409,7 +409,7 @@ Verify that todos, deadlines, and events can coexist in one Task collection whil
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -510,7 +510,7 @@ Verify that empty todos and incomplete deadline or event commands show specific 
     "command": "todo valid task",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] valid task",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -520,7 +520,7 @@ Verify that empty todos and incomplete deadline or event commands show specific 
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -557,7 +557,7 @@ Verify that mark and unmark commands reject missing, non-numeric, and out-of-ran
     "command": "todo borrow book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] borrow book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -583,7 +583,7 @@ Verify that mark and unmark commands reject missing, non-numeric, and out-of-ran
     "command": "mark 1",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [T][X] borrow book",
       "____________________________________________________________"
     ]
@@ -592,7 +592,7 @@ Verify that mark and unmark commands reject missing, non-numeric, and out-of-ran
     "command": "unmark 1",
     "expected_output": [
       "",
-      "  OK, I've marked this task as not done yet:",
+      "  No worries. This task can wait a little longer:",
       "    [T][ ] borrow book",
       "____________________________________________________________"
     ]
@@ -601,7 +601,7 @@ Verify that mark and unmark commands reject missing, non-numeric, and out-of-ran
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -630,7 +630,7 @@ Verify that unknown commands show a clear error and do not add an unintended tas
     "command": "list",
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "____________________________________________________________"
     ]
   },
@@ -638,7 +638,7 @@ Verify that unknown commands show a clear error and do not add an unintended tas
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -659,7 +659,7 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     "command": "todo saved todo",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] saved todo",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -669,7 +669,7 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     "command": "deadline saved deadline /by 2020-01-10",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] saved deadline (by: Jan 10 2020)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -679,7 +679,7 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     "command": "event saved event /from Mon 2pm /to 4pm",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [E][ ] saved event (from: Mon 2pm to: 4pm)",
       "  Now you have 3 tasks in the list.",
       "____________________________________________________________"
@@ -689,7 +689,7 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     "command": "mark 1",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [T][X] saved todo",
       "____________________________________________________________"
     ]
@@ -698,7 +698,7 @@ Verify that Todo, Deadline, and Event tasks can all be saved, including a comple
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -719,7 +719,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "todo read book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] read book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -729,7 +729,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "deadline return book /by 2019-12-02",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] return book (by: Dec 02 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -739,7 +739,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "event project meeting /from Mon 2pm /to 4pm",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [E][ ] project meeting (from: Mon 2pm to: 4pm)",
       "  Now you have 3 tasks in the list.",
       "____________________________________________________________"
@@ -749,7 +749,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "mark 2",
     "expected_output": [
       "",
-      "  Nice! I've marked this task as done:",
+      "  A bright step forward - this task is complete:",
       "    [D][X] return book (by: Dec 02 2019)",
       "____________________________________________________________"
     ]
@@ -758,7 +758,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   },
@@ -767,7 +767,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "new_session": true,
     "expected_output": [
       "",
-      "  Here are the tasks in your list:",
+      "  Here is the path ahead:",
       "  1.[T][ ] read book",
       "  2.[D][X] return book (by: Dec 02 2019)",
       "  3.[E][ ] project meeting (from: Mon 2pm to: 4pm)",
@@ -778,7 +778,7 @@ Verify that Todo, Deadline, and Event tasks, including their done status, are re
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -828,7 +828,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "todo read book",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] read book",
       "  Now you have 1 tasks in the list.",
       "____________________________________________________________"
@@ -838,7 +838,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "deadline return book /by 2019-06-06",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [D][ ] return book (by: Jun 06 2019)",
       "  Now you have 2 tasks in the list.",
       "____________________________________________________________"
@@ -848,7 +848,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "todo write report",
     "expected_output": [
       "",
-      "  Got it. I've added this task:",
+      "  Placed on your path:",
       "    [T][ ] write report",
       "  Now you have 3 tasks in the list.",
       "____________________________________________________________"
@@ -858,7 +858,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "find book",
     "expected_output": [
       "",
-      "  Here are the matching tasks in your list:",
+      "  Here are the matching waypoints:",
       "  1.[T][ ] read book",
       "  2.[D][ ] return book (by: Jun 06 2019)",
       "____________________________________________________________"
@@ -868,7 +868,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "find missing",
     "expected_output": [
       "",
-      "  Here are the matching tasks in your list:",
+      "  Here are the matching waypoints:",
       "____________________________________________________________"
     ]
   },
@@ -884,7 +884,7 @@ Verify that the find command returns only tasks with matching descriptions in th
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -905,7 +905,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "loan lend Alex Tan 12.50 /for lunch",
     "expected_output": [
       "",
-      "  Got it. I've recorded this loan:",
+      "  Kept safely in your ledger:",
       "    [LENT][OUTSTANDING] Alex Tan: S$12.50 (lunch)",
       "  You now have 1 loan records.",
       "____________________________________________________________"
@@ -915,7 +915,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "loan borrow Ben 5 /for bus fare",
     "expected_output": [
       "",
-      "  Got it. I've recorded this loan:",
+      "  Kept safely in your ledger:",
       "    [BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
       "  You now have 2 loan records.",
       "____________________________________________________________"
@@ -925,7 +925,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "loans",
     "expected_output": [
       "",
-      "  Here are your loan records:",
+      "  Here is your loan ledger:",
       "  1.[LENT][OUTSTANDING] Alex Tan: S$12.50 (lunch)",
       "  2.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
       "____________________________________________________________"
@@ -935,7 +935,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "settle-loan 1",
     "expected_output": [
       "",
-      "  Nice! I've marked this loan as settled:",
+      "  Your ledger is balanced for this loan:",
       "    [LENT][SETTLED] Alex Tan: S$12.50 (lunch)",
       "____________________________________________________________"
     ]
@@ -944,7 +944,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   },
@@ -953,7 +953,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "new_session": true,
     "expected_output": [
       "",
-      "  Here are your loan records:",
+      "  Here is your loan ledger:",
       "  1.[LENT][SETTLED] Alex Tan: S$12.50 (lunch)",
       "  2.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus fare)",
       "____________________________________________________________"
@@ -963,7 +963,7 @@ Verify that lent and borrowed money can be recorded separately from tasks, settl
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }
@@ -1032,7 +1032,7 @@ Verify that loan commands reject missing details, invalid directions, invalid am
     "command": "bye",
     "expected_output": [
       "",
-      "  Bye! Hope to see you again soon!!!",
+      "  Safe travels. May your path stay clear.",
       "____________________________________________________________"
     ]
   }

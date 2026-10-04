@@ -1,8 +1,8 @@
 # Nerrad User Guide
 
-Nerrad is a small companion for keeping track of tasks and informal loans.
-It is designed for quick keyboard-based use: type a command, press Enter, and
-Nerrad keeps the record for you.
+Nerrad is a quiet forest companion for keeping track of tasks and informal
+loans. It is designed for quick keyboard-based use: type a command, press
+Enter, and Nerrad keeps the record for you.
 
 ![Nerrad graphical interface](Ui.png)
 

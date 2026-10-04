@@ -18,13 +18,21 @@ class UiTest {
     private final Ui ui = new Ui();
 
     @Test
+    void getWelcomeAndGoodbyeMessage_displayForestCompanionVoice() {
+        assertEquals("Welcome, wanderer. I'm Nerrad - Darren from the other side.\n"
+                        + "Let's clear the path ahead, one task at a time.",
+                ui.getWelcomeMessage());
+        assertEquals("  Safe travels. May your path stay clear.", ui.getGoodbyeMessage());
+    }
+
+    @Test
     void getTaskAndLoanListMessages_displayItemsWithOneBasedNumbers() {
         Todo todo = new Todo("read book");
         Loan loan = new Loan(LoanType.BORROWED, "Ben", new BigDecimal("5"), "bus");
 
-        assertEquals("  Here are the tasks in your list:\n  1.[T][ ] read book",
+        assertEquals("  Here is the path ahead:\n  1.[T][ ] read book",
                 ui.getTaskListMessage(List.of(todo)));
-        assertEquals("  Here are your loan records:\n  1.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus)",
+        assertEquals("  Here is your loan ledger:\n  1.[BORROWED][OUTSTANDING] Ben: S$5.00 (bus)",
                 ui.getLoanListMessage(List.of(loan)));
     }
 

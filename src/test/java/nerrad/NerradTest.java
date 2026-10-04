@@ -22,13 +22,13 @@ class NerradTest {
     void getResponse_taskCommands_updatesTasksAndFormatsReplies() {
         Nerrad nerrad = createNerrad();
 
-        assertEquals("  Got it. I've added this task:\n"
+        assertEquals("  Placed on your path:\n"
                         + "    [T][ ] read book\n"
                         + "  Now you have 1 tasks in the list.",
                 nerrad.getResponse("todo read book"));
-        assertEquals("  Nice! I've marked this task as done:\n    [T][X] read book",
+        assertEquals("  A bright step forward - this task is complete:\n    [T][X] read book",
                 nerrad.getResponse("mark 1"));
-        assertEquals("  Here are the tasks in your list:\n  1.[T][X] read book",
+        assertEquals("  Here is the path ahead:\n  1.[T][X] read book",
                 nerrad.getResponse("list"));
     }
 
@@ -40,23 +40,23 @@ class NerradTest {
                 nerrad.getResponse("unknown"));
         assertTrue(nerrad.isExitCommand("bye"));
         assertFalse(nerrad.isExitCommand("list"));
-        assertEquals("  Bye! Hope to see you again soon!!!", nerrad.getResponse("bye"));
+        assertEquals("  Safe travels. May your path stay clear.", nerrad.getResponse("bye"));
     }
 
     @Test
     void getResponse_loanCommands_persistAndSettleLoan() {
         Nerrad nerrad = createNerrad();
 
-        assertEquals("  Got it. I've recorded this loan:\n"
+        assertEquals("  Kept safely in your ledger:\n"
                         + "    [LENT][OUTSTANDING] Alex: S$12.50 (lunch)\n"
                         + "  You now have 1 loan records.",
                 nerrad.getResponse("loan lend Alex 12.50 /for lunch"));
-        assertEquals("  Nice! I've marked this loan as settled:\n"
+        assertEquals("  Your ledger is balanced for this loan:\n"
                         + "    [LENT][SETTLED] Alex: S$12.50 (lunch)",
                 nerrad.getResponse("settle-loan 1"));
 
         Nerrad restartedNerrad = createNerrad();
-        assertEquals("  Here are your loan records:\n"
+        assertEquals("  Here is your loan ledger:\n"
                         + "  1.[LENT][SETTLED] Alex: S$12.50 (lunch)",
                 restartedNerrad.getResponse("loans"));
     }
